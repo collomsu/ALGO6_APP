@@ -32,6 +32,7 @@ import Modele.Niveau;
 import Structures.Sequence;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.logging.Logger;
 import java.awt.Point;
 
@@ -45,6 +46,12 @@ class IASolution extends IA {
 	// Couleurs au format RGB (rouge, vert, bleu, un octet par couleur)
 	final static int VERT = 0x00CC00;
 	final static int MARRON = 0xBB7755;
+
+	//Directions
+	final static int DROITE = 0;
+	final static int BAS = 1;
+	final static int GAUCHE = 2;
+	final static int HAUT = 3;
 
 	public IASolution() {
 	}
@@ -65,17 +72,158 @@ class IASolution extends IA {
 	//on garde en mémoire, dans une table de hachage, la configuration précédant la configuration clé
 	//ainsi qu'un bolléen indiquant si la branche de la dite configuration a déjà été visitée ou non.
 	public Sequence<Coup> TrouverSolution() {
+		int i;
+
 		Sequence<Coup> solution = Configuration.instance().nouvelleSequence();
 
 		//File contenant les configurations rencontrées et que l'on doit visiter
-		Sequence<Configuration> configurationsAVisiter = Configuration.instance().nouvelleSequence();
+		Sequence<ConfigurationNiveau> configurationsAVisiter = Configuration.instance().nouvelleSequence();
 
 		//Table de hachage contenant le chemin ayant permi d'aboutir à chacune des configurations (visitées/à visiter)
 		//ainsi qu'un bolléen indiquant si la branche de la dite configuration a déjà été visitée ou non.
-		Hashtable<Configuration, >
+		//La configuration initiale est détectable dans la table car elle a comme "configuration mère" la valeur null.
+		Hashtable<ConfigurationNiveau, InfoVisiteConfigurationNiveau> tableVisiteConfigurations = new Hashtable<ConfigurationNiveau, InfoVisiteConfigurationNiveau>();
 		
+		//Visite des différentes configurations en partant de la configuration actuelle
+		boolean aEteTrouveeSolution = false;
+		ConfigurationNiveau configurationVisitee, configurationAVisiter;
 
-		if()
+		//Initialisation de la file à priorité et de la table de hachage avec la configuration initiale
+		configurationAVisiter = new ConfigurationNiveau(niveau);
+		tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(null, false));
+		configurationsAVisiter.insereQueue(configurationAVisiter);
+
+		while(aEteTrouveeSolution == false && configurationsAVisiter.estVide() == false)
+		{
+			configurationVisitee = configurationsAVisiter.extraitTete();
+
+			//On indique dans la table de hachage que la configuration actuelle est visitée
+			tableVisiteConfigurations.get(configurationVisitee).aEteVisiteeConfiguration = true;
+
+			//On regarde si la configuration actuelle est une solution
+			i = 0;
+			aEteTrouveeSolution = true;
+			while(i < configurationVisitee.positionsCaisses.size() && aEteTrouveeSolution == true)
+			{
+				if(niveau.aBut(configurationVisitee.positionsCaisses.get(i).x, configurationVisitee.positionsCaisses.get(i).y) == false)
+				{
+					aEteTrouveeSolution = false;
+				}
+
+				i = i + 1;
+			}
+
+			//Si la configuration n'est pas une solution
+			if(aEteTrouveeSolution == false)
+			{
+				logger.info("Ca passe0.");
+				//Ajout à la file des configurations voisines possibles non-visitées.
+
+				//Si l'on déplace le pousseur à droite
+				if(configurationVisitee.peutPousseurSeDeplacer(DROITE, niveau))
+				{
+					configurationAVisiter = configurationVisitee.configurationApresDeplacement(DROITE, niveau);
+
+					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
+					{
+						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
+						configurationsAVisiter.insereQueue(configurationAVisiter);
+					}
+				}
+
+				//Si l'on déplace le pousseur en bas
+				if(configurationVisitee.peutPousseurSeDeplacer(BAS, niveau))
+				{
+					configurationAVisiter = configurationVisitee.configurationApresDeplacement(BAS, niveau);
+
+					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
+					{
+						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
+						configurationsAVisiter.insereQueue(configurationAVisiter);
+					}
+				}
+
+				//Si l'on déplace le pousseur à gauche
+				if(configurationVisitee.peutPousseurSeDeplacer(GAUCHE, niveau))
+				{
+					configurationAVisiter = configurationVisitee.configurationApresDeplacement(GAUCHE, niveau);
+
+					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
+					{
+						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
+						configurationsAVisiter.insereQueue(configurationAVisiter);
+					}
+				}
+
+				//Si l'on déplace le pousseur en haut
+				if(configurationVisitee.peutPousseurSeDeplacer(HAUT, niveau))
+				{
+					configurationAVisiter = configurationVisitee.configurationApresDeplacement(HAUT, niveau);
+
+					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
+					{
+						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
+						configurationsAVisiter.insereQueue(configurationAVisiter);
+					}
+				}
+			}
+			//Si la configuration actuelle est une solution
+			else
+			{
+				logger.info("Ca passe1.");
+				aEteTrouveeSolution = true;
+
+				//Reconstruction de la solution à partir de l'évolution de la position du joueur
+				Sequence<ConfigurationNiveau> sequenceConfigurationsSolution = Configuration.instance().nouvelleSequence();
+
+				while(configurationVisitee != null)
+				{
+					sequenceConfigurationsSolution.insereQueue(configurationVisitee);
+					configurationVisitee = tableVisiteConfigurations.get(configurationVisitee).configurationPrecedente;
+				}
+
+				Coup coup;
+				ConfigurationNiveau configurationPrecedenteSequence = sequenceConfigurationsSolution.extraitTete();
+				ConfigurationNiveau configurationActuelleSequence;
+				
+				while(sequenceConfigurationsSolution.estVide() == false)
+				{
+					configurationActuelleSequence = sequenceConfigurationsSolution.extraitTete();
+
+					//Si le coup est d'aller à droite
+					if(configurationActuelleSequence.positionPousseur.x == configurationPrecedenteSequence.positionPousseur.x + 1)
+					{
+						coup = niveau.creerCoup(1, 0);
+					}
+					else
+					{
+						//Si le coup est d'aller en bas
+						if(configurationActuelleSequence.positionPousseur.y == configurationPrecedenteSequence.positionPousseur.y - 1)
+						{
+							coup = niveau.creerCoup(0, -1);
+						}
+						else
+						{
+							//Si le coup est d'aller à gauche
+							if(configurationActuelleSequence.positionPousseur.x == configurationPrecedenteSequence.positionPousseur.x - 1)
+							{
+								coup = niveau.creerCoup(-1, 0);
+							}
+							//Si le coup est d'aller en haut
+							else
+							{
+								coup = niveau.creerCoup(0, 1);
+							}
+						}
+					}
+
+					solution.insereQueue(coup);
+				}
+			}
+		}
+
+		//Si aucune solution n'a été trouvée
+		if(aEteTrouveeSolution == false)
 		{
 			solution = null;
 		}
@@ -88,57 +236,14 @@ class IASolution extends IA {
 		//Cette fonction commence par essayer de trouver une solution au niveau dans la configuration dans laquelle le joueur
 		//l'a laissé. Si cette situation est bloquante, le niveau est rechargé.
 		//Si une fois rechargé, le niveau n'a toujours pas de solution, un message est affiché pour l'indiquer.
-		Sequence<Coup> resultat = Configuration.instance().nouvelleSequence();
-		Coup coup = null;
-		boolean mur = true;
-		int dL = 0, dC = 0;
-		int nouveauL = 0;
-		int nouveauC = 0;
+		Sequence<Coup> resultat = this.TrouverSolution();
 
-		int pousseurL = niveau.lignePousseur();
-		int pousseurC = niveau.colonnePousseur();
-		// Mouvement du pousseur
-		while (mur) {
-			int direction;
-			nouveauL = pousseurL + dL;
-			nouveauC = pousseurC + dC;
-			coup = niveau.creerCoup(dL, dC);
-			if (coup == null) {
-				if (niveau.aMur(nouveauL, nouveauC))
-					logger.info("Tentative de déplacement (" + dL + ", " + dC + ") heurte un mur");
-				else if (niveau.aCaisse(nouveauL, nouveauC))
-					logger.info("Tentative de déplacement (" + dL + ", " + dC + ") heurte une caisse non déplaçable");
-				else
-					logger.severe("Tentative de déplacement (" + dL + ", " + dC + "), erreur inconnue");
-				dL = dC = 0;
-			} else
-				mur = false;
-		}
-
-		// Ajout des marques
-		for (int l = 0; l < niveau.lignes(); l++) {
-			for (int c = 0; c < niveau.colonnes(); c++) {
-				int marque = niveau.marque(l, c);
-				if (marque == VERT)
-					coup.marque(l, c, 0);
-			}
-		}
-			
-		coup.marque(pousseurL, pousseurC, MARRON);
-		while (niveau.estOccupable(nouveauL, nouveauC)) {
-			int marque = niveau.marque(nouveauL, nouveauC);
-			if (marque == 0)
-				coup.marque(nouveauL, nouveauC, VERT);
-			nouveauL += dL;
-			nouveauC += dC;
-		}
-		resultat.insereQueue(coup);
-
-		if(true)
+		if(resultat == null)
 		{
-			logger.info("La configuration actuelle du niveau est bloquante, rechargerment du niveau.");
+			logger.info("La configuration actuelle du niveau est bloquante, rechargerment du niveau pour la recherche d'une solution à partir du niveau initial.");
 
-			if(true)
+
+			if(resultat == null)
 			{
 
 			}
@@ -157,11 +262,31 @@ class IASolution extends IA {
 	}
 }
 
-
 //Classe utilisée par IASolution et contenant les informations d'une configuration (position joueur + positions caisses)
 class ConfigurationNiveau {
 	public Point positionPousseur;
 	public ArrayList<Point> positionsCaisses;
+
+	Logger logger;
+
+	//Directions dans lesquelles le pousseur peut se déplacer
+	final static int DROITE = 0;
+	final static int BAS = 1;
+	final static int GAUCHE = 2;
+	final static int HAUT = 3;
+
+	//Constructeurs
+	public ConfigurationNiveau(Point positionPousseur, ArrayList<Point> positionsCaisses)
+	{
+		//Clonage des paramètres
+		this.positionPousseur = (Point) positionPousseur.clone();
+		this.positionsCaisses = new ArrayList<Point>();
+    	for (Point positionCaisse : positionsCaisses) {
+			this.positionsCaisses.add((Point) positionCaisse.clone());
+		}
+
+		logger = Configuration.instance().logger();
+	}
 
 	//Constructeur retournant la configuration de niveau correspondante à l'objet Niveau passé en paramètre
 	public ConfigurationNiveau(Niveau niveau)
@@ -169,6 +294,10 @@ class ConfigurationNiveau {
 		//Lecture des informations du niveau
 		//Lecture de la position du pousseur
 		positionPousseur = new Point(niveau.lignePousseur(), niveau.colonnePousseur());
+		//On part du bas pour y alors que colonnePousseur() part du haut, donc on doit recalculer la position du pousseur
+		this.positionPousseur.y = niveau.colonnes() - this.positionPousseur.y;
+		logger.info("Coordonnées pousseur: (" + niveau.lignePousseur() + ", " + niveau.colonnePousseur() + ")");
+
 
 		//Lecture de la position des caisses
 		positionsCaisses = new ArrayList<Point>();
@@ -183,6 +312,8 @@ class ConfigurationNiveau {
 				if(niveau.aCaisse(i, j))
 				{
 					positionsCaisses.add(new Point(i, j));
+					//On part du bas pour y alors que colonnePousseur() part du haut, donc on doit recalculer la position du pousseur
+					this.positionsCaisses.get(i).y = niveau.colonnes() - this.positionsCaisses.get(i).y;
 				}
 
 				j = j + 1;
@@ -190,6 +321,131 @@ class ConfigurationNiveau {
 
 			i = i + 1;
 		}
+
+		logger = Configuration.instance().logger();
+	}
+
+	//Fonction utile pour le calcul de coordonnées
+	private Point coordonneesApresDeplacement(Point coordonnesObjetDeplace, int direction)
+	{
+		Point coordonneesApresDeplacement = new Point(0, 0);
+
+		if(direction == DROITE)
+		{
+			coordonneesApresDeplacement.x = coordonnesObjetDeplace.x + 1;
+			coordonneesApresDeplacement.y = coordonnesObjetDeplace.y;
+		}
+		else
+		{
+			if(direction == BAS)
+			{
+				coordonneesApresDeplacement.x = coordonnesObjetDeplace.x;
+				coordonneesApresDeplacement.y = coordonnesObjetDeplace.y - 1;
+			}
+			else
+			{
+				if(direction == GAUCHE)
+				{
+					coordonneesApresDeplacement.x = coordonnesObjetDeplace.x - 1;
+					coordonneesApresDeplacement.y = coordonnesObjetDeplace.y;
+				}
+				else
+				{
+					if(direction == HAUT)
+					{
+						coordonneesApresDeplacement.x = coordonnesObjetDeplace.x;
+						coordonneesApresDeplacement.y = coordonnesObjetDeplace.y + 1;
+					}
+					else
+					{
+						logger.severe("Direction inconnue.");
+					}
+				}
+			}
+		}
+
+		return coordonneesApresDeplacement;
+	}
+
+	//Fonction indiquant si le pousseur de la configuration actuelle d'un niveau passé en paramètre peut se déplacer dans la
+	//direction demandée (les 4 directions possibles sont définies au sommet de la classe)
+	//Cette fonction n'est pas appellable directement depuis l'extérieur, il faut passer par l'une de ses spécialisations
+	//dans une direction.
+	public boolean peutPousseurSeDeplacer(int direction, Niveau niveau)
+	{
+		boolean retour = false;
+
+		Point coordonneesApresDeplacement = coordonneesApresDeplacement(this.positionPousseur, direction);
+
+		//Un déplacement du pousseur est possible si:
+		//-Il n'y a rien dans la direction du déplacement
+		//-Ou si il y a une caisse avec rien derrière
+		if((niveau.aMur(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
+			&& this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false)
+			|| (this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == true
+				&& niveau.aMur(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
+				&& this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false))
+		{
+			retour = true;
+		}
+
+		return retour;
+	}
+
+	//Fonction indiquant si une caisse est présente dans les coordonnées indiquées
+	public boolean estCaissePresente(int c, int l)
+	{
+		boolean retour = false;
+		int i = 0;
+
+		while (i < this.positionsCaisses.size() && retour == false)
+		{
+			if(this.positionsCaisses.get(i).x == c && this.positionsCaisses.get(i).y == l)
+			{
+				retour = true;
+			}
+			else
+			{
+				i = i + 1;
+			}
+		}
+
+		return retour;
+	}
+
+	//Fonction retournant la configuration après un déplacement du pousseur.
+	//->un test de la possibilité de cette configuration a du être effectué au préalable
+	public ConfigurationNiveau configurationApresDeplacement(int direction, Niveau niveau)
+	{
+		ConfigurationNiveau configurationApresDeplacement;
+
+		Point coordonneesPousseurApresDeplacement = coordonneesApresDeplacement(this.positionPousseur, direction);
+		Point coordonneesCaisseApresDeplacement;
+
+
+		configurationApresDeplacement = new ConfigurationNiveau(coordonneesPousseurApresDeplacement,
+																new ArrayList<Point>());
+
+		int i = 0;
+
+		while (i < this.positionsCaisses.size())
+		{
+			coordonneesCaisseApresDeplacement = coordonneesApresDeplacement(this.positionsCaisses.get(i), direction);
+
+			if(coordonneesCaisseApresDeplacement.x == coordonneesPousseurApresDeplacement.x
+				&& coordonneesCaisseApresDeplacement.y == coordonneesPousseurApresDeplacement.y)
+			{
+				configurationApresDeplacement.positionsCaisses.add(new Point(coordonneesCaisseApresDeplacement.x, coordonneesCaisseApresDeplacement.y));
+			}
+			else
+			{
+				configurationApresDeplacement.positionsCaisses.add((Point) this.positionsCaisses.get(i).clone());
+			}
+
+			i = i + 1;
+		}
+
+		return configurationApresDeplacement;
 	}
 }
 
@@ -197,12 +453,12 @@ class ConfigurationNiveau {
 //Classe utilisée par IASolution et contenant deux attributs indiquant utiles dans la recherche de la solution d'un niveau
 //de Sokoban.
 class InfoVisiteConfigurationNiveau {
-	public Configuration configurationPrecedente;
-	public boolean aEteVisiteeCOnfiguration;
+	public ConfigurationNiveau configurationPrecedente;
+	public boolean aEteVisiteeConfiguration;
 
-	public InfoVisiteConfigurationNiveau(Configuration configurationPrecedente, boolean aEteVisiteeCOnfiguration)
+	public InfoVisiteConfigurationNiveau(ConfigurationNiveau configurationPrecedente, boolean aEteVisiteeConfiguration)
 	{
 		this.configurationPrecedente = configurationPrecedente;
-		this.aEteVisiteeCOnfiguration = aEteVisiteeCOnfiguration;
+		this.aEteVisiteeConfiguration = aEteVisiteeConfiguration;
 	}
 }

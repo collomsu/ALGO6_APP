@@ -294,8 +294,10 @@ class ConfigurationNiveau {
 		//Lecture des informations du niveau
 		//Lecture de la position du pousseur
 		positionPousseur = new Point(niveau.lignePousseur(), niveau.colonnePousseur());
-		//On part du bas pour y alors que colonnePousseur() part du haut, donc on doit recalculer la position du pousseur
+		//Dans un obje ConfigurationNiveau, l'axe des ordonnées (y) part du bas alors que colonnePousseur() part du haut.
+		//->On doit donc recalculer la position du pousseur sur l'axe des ordonnées
 		this.positionPousseur.y = niveau.colonnes() - this.positionPousseur.y;
+
 		logger.info("Coordonnées pousseur: (" + niveau.lignePousseur() + ", " + niveau.colonnePousseur() + ")");
 
 
@@ -312,7 +314,8 @@ class ConfigurationNiveau {
 				if(niveau.aCaisse(i, j))
 				{
 					positionsCaisses.add(new Point(i, j));
-					//On part du bas pour y alors que colonnePousseur() part du haut, donc on doit recalculer la position du pousseur
+					//Dans un obje ConfigurationNiveau, l'axe des ordonnées (y) part du bas alors que colonnePousseur() part du haut.
+					//->On doit donc recalculer la position des caisses sur l'axe des ordonnées
 					this.positionsCaisses.get(i).y = niveau.colonnes() - this.positionsCaisses.get(i).y;
 				}
 

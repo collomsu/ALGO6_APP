@@ -49,4 +49,9 @@ public class Coup {
 	public void marque(int l, int c, int val) {
 		marques.insereQueue(new Marque(l, c, val));
 	}
+
+	@Override
+	public String toString() {
+		return "" + mouvements;
+	}
 }

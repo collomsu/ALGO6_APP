@@ -116,15 +116,15 @@ class IASolution extends IA {
 			//Si la configuration n'est pas une solution
 			if(aEteTrouveeSolution == false)
 			{
-				logger.info("Ca passe0.");
 				//Ajout à la file des configurations voisines possibles non-visitées.
 
 				//Si l'on déplace le pousseur à droite
 				if(configurationVisitee.peutPousseurSeDeplacer(DROITE, niveau))
 				{
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(DROITE);
-
-					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
+					
+					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
+					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -135,8 +135,9 @@ class IASolution extends IA {
 				if(configurationVisitee.peutPousseurSeDeplacer(BAS, niveau))
 				{
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(BAS);
-
-					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
+					
+					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
+					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -147,8 +148,9 @@ class IASolution extends IA {
 				if(configurationVisitee.peutPousseurSeDeplacer(GAUCHE, niveau))
 				{
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(GAUCHE);
-
-					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
+					
+					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
+					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -159,8 +161,9 @@ class IASolution extends IA {
 				if(configurationVisitee.peutPousseurSeDeplacer(HAUT, niveau))
 				{
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(HAUT);
-
-					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
+					
+					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
+					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -170,7 +173,6 @@ class IASolution extends IA {
 			//Si la configuration actuelle est une solution
 			else
 			{
-				logger.info("Ca passe1.");
 				aEteTrouveeSolution = true;
 
 				//Reconstruction de la solution à partir de l'évolution de la position du joueur
@@ -178,9 +180,12 @@ class IASolution extends IA {
 
 				while(configurationVisitee != null)
 				{
-					sequenceConfigurationsSolution.insereQueue(configurationVisitee);
+					sequenceConfigurationsSolution.insereTete(configurationVisitee);
+					
 					configurationVisitee = tableVisiteConfigurations.get(configurationVisitee).configurationPrecedente;
 				}
+
+				logger.info("Sequence configurations" + sequenceConfigurationsSolution.toString());
 
 				Coup coup;
 				ConfigurationNiveau configurationPrecedenteSequence = sequenceConfigurationsSolution.extraitTete();
@@ -190,34 +195,16 @@ class IASolution extends IA {
 				{
 					configurationActuelleSequence = sequenceConfigurationsSolution.extraitTete();
 
-					//Si le coup est d'aller à droite
-					if(configurationActuelleSequence.positionPousseur.x == configurationPrecedenteSequence.positionPousseur.x + 1)
-					{
-						coup = niveau.creerCoup(1, 0);
-					}
-					else
-					{
-						//Si le coup est d'aller en bas
-						if(configurationActuelleSequence.positionPousseur.y == configurationPrecedenteSequence.positionPousseur.y + 1)
-						{
-							coup = niveau.creerCoup(0, -1);
-						}
-						else
-						{
-							//Si le coup est d'aller à gauche
-							if(configurationActuelleSequence.positionPousseur.x == configurationPrecedenteSequence.positionPousseur.x - 1)
-							{
-								coup = niveau.creerCoup(-1, 0);
-							}
-							//Si le coup est d'aller en haut
-							else
-							{
-								coup = niveau.creerCoup(0, 1);
-							}
-						}
-					}
+					logger.info("Coup: (" + (configurationActuelleSequence.positionPousseur.x - configurationPrecedenteSequence.positionPousseur.x)
+								+ ", " + (configurationActuelleSequence.positionPousseur.y - configurationPrecedenteSequence.positionPousseur.y) + ")");
+
+					//Calcul du coup en fonction de la différence de position du pousseur) qu'il y a entre les deux configurations
+					coup = niveau.creerCoup(configurationActuelleSequence.positionPousseur.x - configurationPrecedenteSequence.positionPousseur.x,
+											configurationActuelleSequence.positionPousseur.y - configurationPrecedenteSequence.positionPousseur.y);
 
 					solution.insereQueue(coup);
+
+					configurationPrecedenteSequence = configurationActuelleSequence;
 				}
 			}
 		}
@@ -237,6 +224,7 @@ class IASolution extends IA {
 		//l'a laissé. Si cette situation est bloquante, le niveau est rechargé.
 		//Si une fois rechargé, le niveau n'a toujours pas de solution, un message est affiché pour l'indiquer.
 		Sequence<Coup> resultat = this.TrouverSolution();
+		logger.info("Resultat" + resultat.toString());
 
 		if(resultat == null)
 		{
@@ -301,9 +289,6 @@ class ConfigurationNiveau {
 		//Lecture de la position du pousseur
 		positionPousseur = new Point(niveau.colonnePousseur(), niveau.lignePousseur());
 
-		logger.info("Pousseur: (" + this.positionPousseur.x + ", " + this.positionPousseur.y + ")");
-
-
 		//Lecture de la position des caisses
 		positionsCaisses = new ArrayList<Point>();
 
@@ -318,7 +303,6 @@ class ConfigurationNiveau {
 			{
 				if(niveau.aCaisseXY(i, j))
 				{
-					logger.info("Yow");
 					positionsCaisses.add(new Point(i, j));
 				}
 
@@ -327,6 +311,11 @@ class ConfigurationNiveau {
 
 			i = i + 1;
 		}
+	}
+
+	@Override
+	public ConfigurationNiveau clone() {
+		return new ConfigurationNiveau(this.positionPousseur, this.positionsCaisses);
 	}
 
 	//Fonction utile pour le calcul de coordonnées
@@ -381,17 +370,16 @@ class ConfigurationNiveau {
 
 		Point coordonneesApresDeplacement = coordonneesApresDeplacement(this.positionPousseur, direction);
 
+
 		//Un déplacement du pousseur est possible si:
 		//-Il n'y a rien dans la direction du déplacement
 		//-Ou si il y a une caisse avec rien derrière
-
-		//Dans un objet ConfigurationNiveau, l'axe des ordonnées (y) part du bas alors que dans un objet Niveay, il part du haut.
-		//->On doit donc recalculer les positions sur l'axe des ordonnées
 		if((niveau.aMurXY(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
 			&& this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false)
 			|| (this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == true
-				&& niveau.aMurXY(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
-				&& this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false))
+				//Si il y a une caisse, on regarde si il y a quelque chose derrière
+				&& niveau.aMurXY(coordonneesApresDeplacement(coordonneesApresDeplacement, direction).x, coordonneesApresDeplacement(coordonneesApresDeplacement, direction).y) == false
+				&& this.estCaissePresente(coordonneesApresDeplacement(coordonneesApresDeplacement, direction).x, coordonneesApresDeplacement(coordonneesApresDeplacement, direction).y) == false))
 		{
 			retour = true;
 		}
@@ -465,7 +453,15 @@ class InfoVisiteConfigurationNiveau {
 
 	public InfoVisiteConfigurationNiveau(ConfigurationNiveau configurationPrecedente, boolean aEteVisiteeConfiguration)
 	{
-		this.configurationPrecedente = configurationPrecedente;
+		if(configurationPrecedente != null)
+		{
+			this.configurationPrecedente = (ConfigurationNiveau) configurationPrecedente.clone();
+		}
+		else
+		{
+			this.configurationPrecedente = null;
+		}
+
 		this.aEteVisiteeConfiguration = aEteVisiteeConfiguration;
 	}
 }

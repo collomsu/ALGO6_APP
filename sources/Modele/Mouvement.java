@@ -60,4 +60,9 @@ public class Mouvement {
 	void fixerContenu(int c) {
 		contenu = c;
 	}
+
+	@Override
+	public String toString() {
+		return "(" + depuisC + ", " + depuisL + ")->" + "(" + versC + ", " + versL + ")";
+	}
 }

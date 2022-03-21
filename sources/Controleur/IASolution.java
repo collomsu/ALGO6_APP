@@ -105,7 +105,7 @@ class IASolution extends IA {
 			aEteTrouveeSolution = true;
 			while(i < configurationVisitee.positionsCaisses.size() && aEteTrouveeSolution == true)
 			{
-				if(niveau.aBut(configurationVisitee.positionsCaisses.get(i).x, configurationVisitee.positionsCaisses.get(i).y) == false)
+				if(niveau.aButXY(configurationVisitee.positionsCaisses.get(i).x, configurationVisitee.positionsCaisses.get(i).y) == false)
 				{
 					aEteTrouveeSolution = false;
 				}
@@ -314,7 +314,7 @@ class ConfigurationNiveau {
 		{
 			while(j < niveau.lignes())
 			{
-				if(niveau.aCaisse(i, j))
+				if(niveau.aCaisseXY(i, j))
 				{
 					positionsCaisses.add(new Point(i, j));
 				}
@@ -384,10 +384,10 @@ class ConfigurationNiveau {
 
 		//Dans un objet ConfigurationNiveau, l'axe des ordonnées (y) part du bas alors que dans un objet Niveay, il part du haut.
 		//->On doit donc recalculer les positions sur l'axe des ordonnées
-		if((niveau.aMur(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
+		if((niveau.aMurXY(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
 			&& this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false)
 			|| (this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == true
-				&& niveau.aMur(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
+				&& niveau.aMurXY(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
 				&& this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false))
 		{
 			retour = true;

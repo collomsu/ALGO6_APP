@@ -187,6 +187,10 @@ public class Niveau implements Cloneable {
 	boolean estVide(int l, int c) {
 		return cases[l][c] == VIDE;
 	}
+	//Equivalent de la fonction précédente mais avec comme ordre des paramètres (x, y) et non (y, x)
+	public boolean estVideXY(int c, int l) {
+		return this.estVide(l, c);
+	}
 
 	public boolean aMur(int l, int c) {
 		return (cases[l][c] & MUR) != 0;

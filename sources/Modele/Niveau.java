@@ -155,6 +155,10 @@ public class Niveau implements Cloneable {
 		}
 		return null;
 	}
+	//Equivalent de la fonction précédente mais avec comme ordre des paramètres (x, y) et non (y, x)
+	public Coup creerCoupXY(int dCol, int dLig) {
+		return creerCoup(dLig, dCol);
+	}
 
 	void ajouteMur(int i, int j) {
 		ajoute(MUR, i, j);
@@ -222,6 +226,10 @@ public class Niveau implements Cloneable {
 
 	public boolean estOccupable(int l, int c) {
 		return !aCaisse(l, c) && !aMur(l, c);
+	}
+	//Equivalent de la fonction précédente mais avec comme ordre des paramètres (x, y) et non (y, x)
+	public boolean estOccupableXY(int l, int c) {
+		return this.estOccupable(l, c);
 	}
 
 	public boolean estTermine() {

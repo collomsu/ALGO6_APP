@@ -199,7 +199,7 @@ class IASolution extends IA {
 								+ ", " + (configurationActuelleSequence.positionPousseur.y - configurationPrecedenteSequence.positionPousseur.y) + ")");
 
 					//Calcul du coup en fonction de la différence de position du pousseur) qu'il y a entre les deux configurations
-					coup = niveau.creerCoup(configurationActuelleSequence.positionPousseur.x - configurationPrecedenteSequence.positionPousseur.x,
+					coup = niveau.creerCoupXY(configurationActuelleSequence.positionPousseur.x - configurationPrecedenteSequence.positionPousseur.x,
 											configurationActuelleSequence.positionPousseur.y - configurationPrecedenteSequence.positionPousseur.y);
 
 					solution.insereQueue(coup);
@@ -414,24 +414,24 @@ class ConfigurationNiveau {
 		Point coordonneesCaisseApresDeplacement;
 
 
-		configurationApresDeplacement = new ConfigurationNiveau((Point) coordonneesPousseurApresDeplacement.clone(),
+		configurationApresDeplacement = new ConfigurationNiveau(coordonneesPousseurApresDeplacement,
 																new ArrayList<Point>());
 
 		int i = 0;
 
 		while (i < this.positionsCaisses.size())
 		{
-			coordonneesCaisseApresDeplacement = coordonneesApresDeplacement(this.positionsCaisses.get(i), direction);
-
-			if(coordonneesCaisseApresDeplacement.x == coordonneesPousseurApresDeplacement.x
-				&& coordonneesCaisseApresDeplacement.y == coordonneesPousseurApresDeplacement.y)
+			if(coordonneesPousseurApresDeplacement.x == this.positionsCaisses.get(i).x
+				&& coordonneesPousseurApresDeplacement.y == this.positionsCaisses.get(i).y)
 			{
-				configurationApresDeplacement.positionsCaisses.add(new Point(coordonneesCaisseApresDeplacement.x, coordonneesCaisseApresDeplacement.y));
+				coordonneesCaisseApresDeplacement = coordonneesApresDeplacement(this.positionsCaisses.get(i), direction);
 			}
 			else
 			{
-				configurationApresDeplacement.positionsCaisses.add((Point) this.positionsCaisses.get(i).clone());
+				coordonneesCaisseApresDeplacement = (Point) this.positionsCaisses.get(i).clone();
 			}
+
+			configurationApresDeplacement.positionsCaisses.add(coordonneesCaisseApresDeplacement);
 
 			i = i + 1;
 		}

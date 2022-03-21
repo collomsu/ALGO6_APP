@@ -271,12 +271,8 @@ class ConfigurationNiveau {
 		//Récupération du logger
 		logger = Configuration.instance().logger();
 
-		//Clonage des paramètres
-		this.positionPousseur = (Point) positionPousseur.clone();
-		this.positionsCaisses = new ArrayList<Point>();
-    	for (Point positionCaisse : positionsCaisses) {
-			this.positionsCaisses.add((Point) positionCaisse.clone());
-		}
+		this.positionPousseur = positionPousseur;
+		this.positionsCaisses = positionsCaisses;
 	}
 
 	//Constructeur retournant la configuration de niveau correspondante à l'objet Niveau passé en paramètre
@@ -418,7 +414,7 @@ class ConfigurationNiveau {
 		Point coordonneesCaisseApresDeplacement;
 
 
-		configurationApresDeplacement = new ConfigurationNiveau(coordonneesPousseurApresDeplacement,
+		configurationApresDeplacement = new ConfigurationNiveau((Point) coordonneesPousseurApresDeplacement.clone(),
 																new ArrayList<Point>());
 
 		int i = 0;
@@ -453,15 +449,7 @@ class InfoVisiteConfigurationNiveau {
 
 	public InfoVisiteConfigurationNiveau(ConfigurationNiveau configurationPrecedente, boolean aEteVisiteeConfiguration)
 	{
-		if(configurationPrecedente != null)
-		{
-			this.configurationPrecedente = (ConfigurationNiveau) configurationPrecedente.clone();
-		}
-		else
-		{
-			this.configurationPrecedente = null;
-		}
-
+		this.configurationPrecedente = configurationPrecedente;
 		this.aEteVisiteeConfiguration = aEteVisiteeConfiguration;
 	}
 }

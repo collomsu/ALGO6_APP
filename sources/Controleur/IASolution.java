@@ -122,7 +122,7 @@ class IASolution extends IA {
 				//Si l'on déplace le pousseur à droite
 				if(configurationVisitee.peutPousseurSeDeplacer(DROITE, niveau))
 				{
-					configurationAVisiter = configurationVisitee.configurationApresDeplacement(DROITE, niveau);
+					configurationAVisiter = configurationVisitee.configurationApresDeplacement(DROITE);
 
 					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
 					{
@@ -134,7 +134,7 @@ class IASolution extends IA {
 				//Si l'on déplace le pousseur en bas
 				if(configurationVisitee.peutPousseurSeDeplacer(BAS, niveau))
 				{
-					configurationAVisiter = configurationVisitee.configurationApresDeplacement(BAS, niveau);
+					configurationAVisiter = configurationVisitee.configurationApresDeplacement(BAS);
 
 					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
 					{
@@ -146,7 +146,7 @@ class IASolution extends IA {
 				//Si l'on déplace le pousseur à gauche
 				if(configurationVisitee.peutPousseurSeDeplacer(GAUCHE, niveau))
 				{
-					configurationAVisiter = configurationVisitee.configurationApresDeplacement(GAUCHE, niveau);
+					configurationAVisiter = configurationVisitee.configurationApresDeplacement(GAUCHE);
 
 					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
 					{
@@ -158,7 +158,7 @@ class IASolution extends IA {
 				//Si l'on déplace le pousseur en haut
 				if(configurationVisitee.peutPousseurSeDeplacer(HAUT, niveau))
 				{
-					configurationAVisiter = configurationVisitee.configurationApresDeplacement(HAUT, niveau);
+					configurationAVisiter = configurationVisitee.configurationApresDeplacement(HAUT);
 
 					if(tableVisiteConfigurations.get(configurationAVisiter) == null)
 					{
@@ -198,7 +198,7 @@ class IASolution extends IA {
 					else
 					{
 						//Si le coup est d'aller en bas
-						if(configurationActuelleSequence.positionPousseur.y == configurationPrecedenteSequence.positionPousseur.y - 1)
+						if(configurationActuelleSequence.positionPousseur.y == configurationPrecedenteSequence.positionPousseur.y + 1)
 						{
 							coup = niveau.creerCoup(0, -1);
 						}
@@ -264,6 +264,8 @@ class IASolution extends IA {
 
 //Classe utilisée par IASolution et contenant les informations d'une configuration (position joueur + positions caisses)
 class ConfigurationNiveau {
+	//Niveau coordonnées, on va de gauche à droite pour l'axe x et on va de haut en bas pour l'axe y.
+
 	public Point positionPousseur;
 	public ArrayList<Point> positionsCaisses;
 
@@ -278,34 +280,35 @@ class ConfigurationNiveau {
 	//Constructeurs
 	public ConfigurationNiveau(Point positionPousseur, ArrayList<Point> positionsCaisses)
 	{
+		//Récupération du logger
+		logger = Configuration.instance().logger();
+
 		//Clonage des paramètres
 		this.positionPousseur = (Point) positionPousseur.clone();
 		this.positionsCaisses = new ArrayList<Point>();
     	for (Point positionCaisse : positionsCaisses) {
 			this.positionsCaisses.add((Point) positionCaisse.clone());
 		}
-
-		logger = Configuration.instance().logger();
 	}
 
 	//Constructeur retournant la configuration de niveau correspondante à l'objet Niveau passé en paramètre
 	public ConfigurationNiveau(Niveau niveau)
 	{
+		//Récupération du logger
+		logger = Configuration.instance().logger();
+
 		//Lecture des informations du niveau
 		//Lecture de la position du pousseur
-		positionPousseur = new Point(niveau.lignePousseur(), niveau.colonnePousseur());
-		//Dans un obje ConfigurationNiveau, l'axe des ordonnées (y) part du bas alors que colonnePousseur() part du haut.
-		//->On doit donc recalculer la position du pousseur sur l'axe des ordonnées
-		this.positionPousseur.y = niveau.colonnes() - this.positionPousseur.y;
+		positionPousseur = new Point(niveau.colonnePousseur(), niveau.lignePousseur());
 
-		logger.info("Coordonnées pousseur: (" + niveau.lignePousseur() + ", " + niveau.colonnePousseur() + ")");
+		logger.info("Pousseur: (" + this.positionPousseur.x + ", " + this.positionPousseur.y + ")");
 
 
 		//Lecture de la position des caisses
 		positionsCaisses = new ArrayList<Point>();
 
 		//i = abscisses = axe x = colonnes
-		//i = ordonnées = axe y = lignes
+		//j = ordonnées = axe y = lignes
 		int i = 0, j = 0;
 		while(i < niveau.colonnes())
 		{
@@ -314,9 +317,6 @@ class ConfigurationNiveau {
 				if(niveau.aCaisse(i, j))
 				{
 					positionsCaisses.add(new Point(i, j));
-					//Dans un obje ConfigurationNiveau, l'axe des ordonnées (y) part du bas alors que colonnePousseur() part du haut.
-					//->On doit donc recalculer la position des caisses sur l'axe des ordonnées
-					this.positionsCaisses.get(i).y = niveau.colonnes() - this.positionsCaisses.get(i).y;
 				}
 
 				j = j + 1;
@@ -324,8 +324,6 @@ class ConfigurationNiveau {
 
 			i = i + 1;
 		}
-
-		logger = Configuration.instance().logger();
 	}
 
 	//Fonction utile pour le calcul de coordonnées
@@ -343,7 +341,7 @@ class ConfigurationNiveau {
 			if(direction == BAS)
 			{
 				coordonneesApresDeplacement.x = coordonnesObjetDeplace.x;
-				coordonneesApresDeplacement.y = coordonnesObjetDeplace.y - 1;
+				coordonneesApresDeplacement.y = coordonnesObjetDeplace.y + 1;
 			}
 			else
 			{
@@ -357,7 +355,7 @@ class ConfigurationNiveau {
 					if(direction == HAUT)
 					{
 						coordonneesApresDeplacement.x = coordonnesObjetDeplace.x;
-						coordonneesApresDeplacement.y = coordonnesObjetDeplace.y + 1;
+						coordonneesApresDeplacement.y = coordonnesObjetDeplace.y - 1;
 					}
 					else
 					{
@@ -383,6 +381,9 @@ class ConfigurationNiveau {
 		//Un déplacement du pousseur est possible si:
 		//-Il n'y a rien dans la direction du déplacement
 		//-Ou si il y a une caisse avec rien derrière
+
+		//Dans un objet ConfigurationNiveau, l'axe des ordonnées (y) part du bas alors que dans un objet Niveay, il part du haut.
+		//->On doit donc recalculer les positions sur l'axe des ordonnées
 		if((niveau.aMur(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
 			&& this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false)
 			|| (this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == true
@@ -418,7 +419,7 @@ class ConfigurationNiveau {
 
 	//Fonction retournant la configuration après un déplacement du pousseur.
 	//->un test de la possibilité de cette configuration a du être effectué au préalable
-	public ConfigurationNiveau configurationApresDeplacement(int direction, Niveau niveau)
+	public ConfigurationNiveau configurationApresDeplacement(int direction)
 	{
 		ConfigurationNiveau configurationApresDeplacement;
 

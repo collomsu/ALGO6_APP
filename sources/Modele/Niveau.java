@@ -191,9 +191,17 @@ public class Niveau implements Cloneable {
 	public boolean aMur(int l, int c) {
 		return (cases[l][c] & MUR) != 0;
 	}
+	//Equivalent de la fonction précédente mais avec comme ordre des paramètres (x, y) et non (y, x)
+	public boolean aMurXY(int c, int l) {
+		return this.aMur(l, c);
+	}
 
 	public boolean aBut(int l, int c) {
 		return (cases[l][c] & BUT) != 0;
+	}
+	//Equivalent de la fonction précédente mais avec comme ordre des paramètres (x, y) et non (y, x)
+	public boolean aButXY(int c, int l) {
+		return this.aBut(l, c);
 	}
 
 	public boolean aPousseur(int l, int c) {
@@ -202,6 +210,10 @@ public class Niveau implements Cloneable {
 
 	public boolean aCaisse(int l, int c) {
 		return (cases[l][c] & CAISSE) != 0;
+	}
+	//Equivalent de la fonction précédente mais avec comme ordre des paramètres (x, y) et non (y, x)
+	public boolean aCaisseXY(int c, int l) {
+		return this.aCaisse(l, c);
 	}
 
 	public boolean estOccupable(int l, int c) {

@@ -309,13 +309,16 @@ class ConfigurationNiveau {
 
 		//i = abscisses = axe x = colonnes
 		//j = ordonnées = axe y = lignes
-		int i = 0, j = 0;
+		int i = 0, j;
 		while(i < niveau.colonnes())
 		{
+			j = 0;
+
 			while(j < niveau.lignes())
 			{
 				if(niveau.aCaisseXY(i, j))
 				{
+					logger.info("Yow");
 					positionsCaisses.add(new Point(i, j));
 				}
 

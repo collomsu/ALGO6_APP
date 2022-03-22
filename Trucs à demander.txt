@@ -1,0 +1,5 @@
+Pourquoi if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+ne fonctionne pas alors que if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false) oui
+
+
+Pourquoi la fonction creerCoup fait n'importe quoi.

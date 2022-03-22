@@ -229,25 +229,11 @@ class IASolution extends IA {
 
 	@Override
 	public Sequence<Coup> joue() {
-		//Cette fonction commence par essayer de trouver une solution au niveau dans la configuration dans laquelle le joueur
-		//l'a laissé. Si cette situation est bloquante, le niveau est rechargé.
-		//Si une fois rechargé, le niveau n'a toujours pas de solution, un message est affiché pour l'indiquer.
 		Sequence<Coup> resultat = this.TrouverSolution();
-		logger.info("Resultat" + resultat.toString());
 
 		if(resultat == null)
 		{
-			logger.info("La configuration actuelle du niveau est bloquante, rechargerment du niveau pour la recherche d'une solution à partir du niveau initial.");
-
-
-			if(resultat == null)
-			{
-
-			}
-			else
-			{
-				logger.info("La configuration actuelle du niveau est bloquante, rechargerment du niveau.");
-			}
+			logger.info("Le niveau ou la configuration actuelle de ce dernier n'a pas de solution.");
 		}
 		
 		return resultat;

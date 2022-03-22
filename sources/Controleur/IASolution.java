@@ -33,6 +33,7 @@ import Structures.Sequence;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.awt.Point;
 
@@ -124,6 +125,7 @@ class IASolution extends IA {
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(DROITE);
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
+					//Demander pourquoi un simple contains key ne fonctionne pas
 					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
@@ -315,6 +317,33 @@ class ConfigurationNiveau {
 		return new ConfigurationNiveau(this.positionPousseur, this.positionsCaisses);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		boolean retour = false;
+
+		if (obj == null) {
+            retour = false;
+        }
+		else
+		{
+			if (obj.getClass() != this.getClass()) {
+				retour = false;
+			}
+			else
+			{
+				ConfigurationNiveau objetCompare = (ConfigurationNiveau) obj;
+
+				if(this.positionPousseur.equals(objetCompare.positionPousseur)
+				   && this.positionsCaisses.equals(objetCompare.positionsCaisses))
+				{
+					retour = true;
+				}
+			}
+		}
+
+		return retour;
+	}
+
 	//Fonction utile pour le calcul de coordonnées
 	private Point coordonneesApresDeplacement(Point coordonnesObjetDeplace, int direction)
 	{
@@ -450,6 +479,26 @@ class ConfigurationNiveau {
 		}
 
 		return configurationApresDeplacement;
+	}
+
+	//Fonction regardant si l'objet ConfigurationNiveau présent est l'une des clés de la table de hachage passée
+	//en parametre
+	public <TypeCles> boolean estCleHashTable(Hashtable<ConfigurationNiveau, TypeCles> table)
+	{
+		boolean retour = false;
+
+		Set<ConfigurationNiveau> clesTable = table.keySet();
+
+		for(ConfigurationNiveau cle: clesTable)
+		{
+			if(this.equals(cle))
+			{
+				retour = true;
+				break;
+			}
+		}
+
+		return retour;
 	}
 }
 

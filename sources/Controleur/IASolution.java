@@ -125,8 +125,8 @@ class IASolution extends IA {
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(DROITE);
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					//Demander pourquoi un simple contains key ne fonctionne pas
-					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+					//Demander pourquoi un simple containsKey ne fonctionne pas
+					if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -139,7 +139,8 @@ class IASolution extends IA {
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(BAS);
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+					//Demander pourquoi un simple containsKey ne fonctionne pas
+					if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -152,7 +153,8 @@ class IASolution extends IA {
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(GAUCHE);
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+					//Demander pourquoi un simple containsKey ne fonctionne pas
+					if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -165,7 +167,8 @@ class IASolution extends IA {
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(HAUT);
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+					//Demander pourquoi un simple containsKey ne fonctionne pas
+					if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);

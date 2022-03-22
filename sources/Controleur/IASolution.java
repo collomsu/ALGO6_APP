@@ -199,6 +199,7 @@ class IASolution extends IA {
 								+ ", " + (configurationActuelleSequence.positionPousseur.y - configurationPrecedenteSequence.positionPousseur.y) + ")");
 
 					//Calcul du coup en fonction de la différence de position du pousseur) qu'il y a entre les deux configurations
+					//C'est la fonction creerCoup qui ne marche pas, regarder logs
 					coup = niveau.creerCoupXY(configurationActuelleSequence.positionPousseur.x - configurationPrecedenteSequence.positionPousseur.x,
 											configurationActuelleSequence.positionPousseur.y - configurationPrecedenteSequence.positionPousseur.y);
 
@@ -364,20 +365,32 @@ class ConfigurationNiveau {
 	{
 		boolean retour = false;
 
-		Point coordonneesApresDeplacement = coordonneesApresDeplacement(this.positionPousseur, direction);
+		Point coordonneesPousseurApresDeplacement = coordonneesApresDeplacement(this.positionPousseur, direction);
+		Point coordonneesCaisseApresDeplacement;
 
 
 		//Un déplacement du pousseur est possible si:
 		//-Il n'y a rien dans la direction du déplacement
-		//-Ou si il y a une caisse avec rien derrière
-		if((niveau.aMurXY(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false
-			&& this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == false)
-			|| (this.estCaissePresente(coordonneesApresDeplacement.x, coordonneesApresDeplacement.y) == true
-				//Si il y a une caisse, on regarde si il y a quelque chose derrière
-				&& niveau.aMurXY(coordonneesApresDeplacement(coordonneesApresDeplacement, direction).x, coordonneesApresDeplacement(coordonneesApresDeplacement, direction).y) == false
-				&& this.estCaissePresente(coordonneesApresDeplacement(coordonneesApresDeplacement, direction).x, coordonneesApresDeplacement(coordonneesApresDeplacement, direction).y) == false))
+		if(niveau.aMurXY(coordonneesPousseurApresDeplacement.x, coordonneesPousseurApresDeplacement.y) == false
+			&& this.estCaissePresente(coordonneesPousseurApresDeplacement.x, coordonneesPousseurApresDeplacement.y) == false)
 		{
 			retour = true;
+		}
+		else
+		{
+			//-Ou si il y a une caisse avec rien derrière
+			if(this.estCaissePresente(coordonneesPousseurApresDeplacement.x, coordonneesPousseurApresDeplacement.y) == true)
+			{
+				//Si il y a une caisse, on regarde ce qu'il y a derrière
+				coordonneesCaisseApresDeplacement = coordonneesApresDeplacement(coordonneesPousseurApresDeplacement, direction);
+				
+				//Si il n'y a rien derrière la caisse, elle peut être déplacée
+				if(niveau.aMurXY(coordonneesCaisseApresDeplacement.x, coordonneesCaisseApresDeplacement.y) == false
+				   && this.estCaissePresente(coordonneesCaisseApresDeplacement.x, coordonneesCaisseApresDeplacement.y) == false)
+				{
+					retour = true;
+				}
+			}
 		}
 
 		return retour;
@@ -422,7 +435,7 @@ class ConfigurationNiveau {
 		while (i < this.positionsCaisses.size())
 		{
 			if(coordonneesPousseurApresDeplacement.x == this.positionsCaisses.get(i).x
-				&& coordonneesPousseurApresDeplacement.y == this.positionsCaisses.get(i).y)
+			   && coordonneesPousseurApresDeplacement.y == this.positionsCaisses.get(i).y)
 			{
 				coordonneesCaisseApresDeplacement = coordonneesApresDeplacement(this.positionsCaisses.get(i), direction);
 			}

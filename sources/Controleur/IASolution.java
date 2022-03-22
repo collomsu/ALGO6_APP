@@ -189,26 +189,29 @@ class IASolution extends IA {
 					
 					configurationVisitee = tableVisiteConfigurations.get(configurationVisitee).configurationPrecedente;
 				}
-
-				logger.info("Sequence configurations" + sequenceConfigurationsSolution.toString());
-
+				
+				//Construction de la séquence de coups
 				Coup coup;
 				ConfigurationNiveau configurationPrecedenteSequence = sequenceConfigurationsSolution.extraitTete();
 				ConfigurationNiveau configurationActuelleSequence;
+
+				//On se sert d'une copie du niveau pour construire cette séquence de coup (il faut une référence de niveau à jour pour utiliser la fonction
+				//creerCoup().)
+				Niveau copieNiveau = niveau.clone();
 				
 				while(sequenceConfigurationsSolution.estVide() == false)
 				{
 					configurationActuelleSequence = sequenceConfigurationsSolution.extraitTete();
 
-					logger.info("Coup: (" + (configurationActuelleSequence.positionPousseur.x - configurationPrecedenteSequence.positionPousseur.x)
-								+ ", " + (configurationActuelleSequence.positionPousseur.y - configurationPrecedenteSequence.positionPousseur.y) + ")");
-
 					//Calcul du coup en fonction de la différence de position du pousseur) qu'il y a entre les deux configurations
 					//C'est la fonction creerCoup qui ne marche pas, regarder logs
-					coup = niveau.creerCoupXY(configurationActuelleSequence.positionPousseur.x - configurationPrecedenteSequence.positionPousseur.x,
+					coup = copieNiveau.creerCoupXY(configurationActuelleSequence.positionPousseur.x - configurationPrecedenteSequence.positionPousseur.x,
 											configurationActuelleSequence.positionPousseur.y - configurationPrecedenteSequence.positionPousseur.y);
 
 					solution.insereQueue(coup);
+					
+					//Mise à jour du niveau
+					copieNiveau.jouer(coup);
 
 					configurationPrecedenteSequence = configurationActuelleSequence;
 				}

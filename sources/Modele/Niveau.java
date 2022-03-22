@@ -253,7 +253,23 @@ public class Niveau implements Cloneable {
 	public Niveau clone() {
 		try {
 			Niveau resultat = (Niveau) super.clone();
-			resultat.cases = cases.clone();
+			resultat.cases = new int[l][c];
+
+			int i = 0, j;
+			while(i < this.cases.length)
+			{
+				j = 0;
+
+				while(j < this.cases[i].length)
+				{
+					resultat.cases[i][j] = this.cases[i][j];
+
+					j = j + 1;
+				}
+
+				i = i + 1;
+			}
+
 			return resultat;
 		} catch (CloneNotSupportedException e) {
 			Configuration.instance().logger().severe("Bug interne, niveau non clonable");

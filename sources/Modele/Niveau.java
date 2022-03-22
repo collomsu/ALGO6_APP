@@ -253,19 +253,14 @@ public class Niveau implements Cloneable {
 	public Niveau clone() {
 		try {
 			Niveau resultat = (Niveau) super.clone();
-			resultat.cases = new int[l][c];
 
-			int i = 0, j;
+			//Copie du tableau de cases
+			resultat.cases = new int[this.cases.length][this.cases[0].length];
+
+			int i = 0;
 			while(i < this.cases.length)
 			{
-				j = 0;
-
-				while(j < this.cases[i].length)
-				{
-					resultat.cases[i][j] = this.cases[i][j];
-
-					j = j + 1;
-				}
+				resultat.cases[i] = this.cases[i].clone();
 
 				i = i + 1;
 			}

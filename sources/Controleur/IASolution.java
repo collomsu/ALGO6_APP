@@ -126,7 +126,7 @@ class IASolution extends IA {
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
 					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
-					if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false)
+					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -140,7 +140,7 @@ class IASolution extends IA {
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
 					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
-					if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false)
+					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -154,7 +154,7 @@ class IASolution extends IA {
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
 					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
-					if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false)
+					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -168,7 +168,7 @@ class IASolution extends IA {
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
 					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
-					if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false)
+					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
 						configurationsAVisiter.insereQueue(configurationAVisiter);
@@ -349,6 +349,12 @@ class ConfigurationNiveau {
 
 		return retour;
 	}
+
+	@Override
+	public int hashCode() {
+		return positionPousseur.hashCode() + positionsCaisses.hashCode();
+	}
+
 
 	//Fonction utile pour le calcul de coordonnées
 	private Point coordonneesApresDeplacement(Point coordonnesObjetDeplace, int direction)

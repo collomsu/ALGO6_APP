@@ -443,6 +443,7 @@ class ConfigurationNiveau {
 			//On regarde si une caisse est collée à un mur
 			caisseColleeAMur = false;
 			caisseDansCoin = false;
+			caissePeutEtreDecolleeMur = false;
 			directionMur = this.estCaisseColleeAMur(i, niveau);
 
 			if(directionMur != -1)
@@ -500,7 +501,7 @@ class ConfigurationNiveau {
 				//La caisse doit donc pouvoir être poussée en direction de l'extrémité pour pouvoir l'atteindre
 				//->Le pousseur doit pouvoir se faufiler derrière elle
 
-				caissePeutEtreDecolleeMur = false;
+				
 
 				//On regarde si le pousseur peut se faufiler derrière la caisse pour la pousser vers la première extrémité
 				if(niveau.aMurXY(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)) == false
@@ -553,10 +554,46 @@ class ConfigurationNiveau {
 						}
 					}
 				}
+				
+				//Si la caisse ne peut pas être décollée du mur, on regarde si une destination est collée à ce mur
+				if(!caissePeutEtreDecolleeMur) {
+					boolean placeDispo = false;
+					j = 1;
+
+					while (!placeDispo  && !niveau.aMurXY(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y)
+						&& (this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
+						&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes()) {
+						//Si un But est pr�sent sur le long du mur
+						if(niveau.aButXY(this.positionsCaisses.get(i).x + vecteurMurX + (Math.abs(vecteurMurY) * j),
+										this.positionsCaisses.get(i).y + vecteurMurY + (Math.abs(vecteurMurX) * j))) {
+							placeDispo = true;
+						}
+						else {
+							j++;
+						}
+					}
+					
+					if(!placeDispo) {
+						j = 1;
+						
+						while (!placeDispo  && !niveau.aMurXY(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y)
+							&& (this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
+							&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes()) {
+							//Si un But est pr�sent sur le long du mur
+							if(niveau.aButXY(this.positionsCaisses.get(i).x + vecteurMurX - (Math.abs(vecteurMurY) * j),
+											this.positionsCaisses.get(i).y + vecteurMurY - (Math.abs(vecteurMurX) * j))) {
+								placeDispo = true;
+							}
+							else {
+								j++;
+							}
+						}
+					}
+				}
 			}
 
-			//Si la caisse ne peut pas être décollée du mur, on regarde si une destination est collée à ce mur
-
+			
+			
 			if(caisseColleeAMur == false)
 			{
 				i = i + 1;

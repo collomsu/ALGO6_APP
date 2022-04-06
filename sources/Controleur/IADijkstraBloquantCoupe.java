@@ -42,7 +42,7 @@ import java.awt.Point;
 //IA appellée lorsque le joueur décide de laisser l'intelligence artificielle lui donner une solution pour le niveau.
 //Si le joueur était dans une situation bloquante, le niveau est rechargé.
 //Si une fois rechargé, le niveau n'a pas de solution, un message est affiché au joueur pour le lui indiquer.
-class IASolution extends IA {
+class IADijkstra extends IA {
 	Logger logger;
 	// Couleurs au format RGB (rouge, vert, bleu, un octet par couleur)
 	final static int VERT = 0x00CC00;
@@ -54,7 +54,7 @@ class IASolution extends IA {
 	final static int GAUCHE = 2;
 	final static int HAUT = 3;
 
-	public IASolution() {
+	public IADijkstra() {
 	}
 
 	@Override
@@ -423,13 +423,142 @@ class ConfigurationNiveau {
 		return retour;
 	}
 
+	//Fonction indiquant si la configuration courrante est bloquante.
+	//Une configuration est considérée comme bloquante si:
+	//-Une caisse est collée contre un mur.
+	//-Ladite caisse ne peut être décollée du mur.
+	//-Il n'y a contre ce mur pas assez de destinations pour le nombre de caisses qui y sont collées
+	public boolean estConfigurationBloquante(Niveau niveau)
+	{
+		boolean retour = false;
+
+		int i = 0, j;
+		boolean caisseColleeAMur, caissePeutEtreDecolleeMur;
+		int directionMur;
+
+		while (retour == false && i < this.positionsCaisses.size())
+		{
+			//On regarde si une caisse est collée à un mur
+			caisseColleeAMur = false;
+
+			directionMur = this.estCaisseColleeAMur(i, niveau);
+
+			if(directionMur != -1)
+			{
+				caisseColleeAMur = true;
+			}
+
+			//Si une caisse est collée à un mur, on regarde si on peut décoller ladite caisse du mur
+			if(caisseColleeAMur = true)
+			{
+				//Couple de vecteurs utilisé pour calculer si la caisse peut être décollé du mur
+				int vecteurMurX = 0, vecteurMurY = 0;
+				//->Si ce couple = (1, 0), on regarde si l'on peut décoller la caisse d'un supposé mur à sa droite
+
+				if(directionMur == DROITE)
+				{
+					vecteurMurX = 1;
+					vecteurMurY = 0;
+				}
+				else
+				{
+					if(directionMur == BAS)
+					{
+						vecteurMurX = 0;
+						vecteurMurY = 1;
+					}
+					else
+					{
+						if(directionMur == GAUCHE)
+						{
+							vecteurMurX = -1;
+							vecteurMurY = 0;
+						}
+						else
+						{
+							if(directionMur == HAUT)
+							{
+								vecteurMurX = 0;
+								vecteurMurY = -1;
+							}
+						}
+					}
+				}
+
+				//Une caisse peut être décollée d'un mur si en la poussant à l'une des extrémités elle n'y est plus collée
+				//La caisse doit donc pouvoir être poussée en direction de l'extrémité pour pouvoir l'atteindre
+				//->Le pousseur doit pouvoir se faufiler derrière elle
+
+				caissePeutEtreDecolleeMur = false;
+
+				//On regarde si le pousseur peut se faufiler derrière la caisse pour la pousser vers la première extrémité
+				if(niveau.aMurXY(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)) == false
+					&& this.estCaissePresente(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)))
+				{
+					//On regarde si en poussant la caisse vers la première extrémité on finirait par la décoller du mur
+					j = 1;
+
+					while (caissePeutEtreDecolleeMur == false
+						   && (this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j)) >= 0
+						   && (this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)) >= 0)
+					{
+						//Si la caisse est décollée du mur
+						if(niveau.aMurXY(this.positionsCaisses.get(i).x + vecteurMurX - (Math.abs(vecteurMurY) * j),
+										 this.positionsCaisses.get(i).y + vecteurMurY - (Math.abs(vecteurMurX) * j)) == false)
+						{
+							caissePeutEtreDecolleeMur = true;
+						}
+						else
+						{
+							j = j + 1;
+						}
+					}
+				}
+
+				//Si on ne peut pas décoller la caisse du mur en la poussant vers la première extrémité
+				//On regarde si le pousseur peut se faufiler derrière la caisse pour la pousser vers la seconde extrémité
+				if(caissePeutEtreDecolleeMur == false)
+				{
+					//On regarde si en poussant la caisse vers la seconde extrémité on finirait par la décoller du mur
+					j = 1;
+
+					while (caissePeutEtreDecolleeMur == false
+						   && (this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
+						   && (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes())
+					{
+						//Si la caisse est décollée du mur
+						if(niveau.aMurXY(this.positionsCaisses.get(i).x + vecteurMurX + (Math.abs(vecteurMurY) * j),
+										 this.positionsCaisses.get(i).y + vecteurMurY + (Math.abs(vecteurMurX) * j)) == false)
+						{
+							caissePeutEtreDecolleeMur = true;
+						}
+						else
+						{
+							j = j + 1;
+						}
+					}
+				}
+			}
+
+			//Si la caisse ne peut pas être décollée du mur, on regarde si une destination est collée à ce mur
+
+			if(caisseColleeAMur == false)
+			{
+				i = i + 1;
+			}
+		}
+
+		return retour;
+	}
+
 	//Fonction indiquant si une caisse est présente dans les coordonnées indiquées
 	public boolean estCaissePresente(int c, int l)
 	{
 		boolean retour = false;
+
 		int i = 0;
 
-		while (i < this.positionsCaisses.size() && retour == false)
+		while (retour == false && i < this.positionsCaisses.size())
 		{
 			if(this.positionsCaisses.get(i).x == c && this.positionsCaisses.get(i).y == l)
 			{
@@ -438,6 +567,44 @@ class ConfigurationNiveau {
 			else
 			{
 				i = i + 1;
+			}
+		}
+
+		return retour;
+	}
+
+	//Fonction indiquant si la caisse de numéro numeroCaisse (indice dans la liste des caisses) est collée à un mur
+	//Renvoie -1 si elle n'est collée à aucun mur, sinon renvoie la direction de ce mur
+	public int estCaisseColleeAMur(int numeroCaisse, Niveau niveau)
+	{
+		int retour = -1;
+
+		if(niveau.aMurXY(this.positionsCaisses.get(numeroCaisse).x + 1, this.positionsCaisses.get(numeroCaisse).y))
+		{
+			retour = DROITE;
+		}
+		else
+		{
+			//Si un mur est présent en bas de la caisse
+			if(niveau.aMurXY(this.positionsCaisses.get(numeroCaisse).x, this.positionsCaisses.get(numeroCaisse).y + 1))
+			{
+				retour = BAS;
+			}
+			else
+			{
+				//Si un mur est présent à gauche de la caisse
+				if(niveau.aMurXY(this.positionsCaisses.get(numeroCaisse).x - 1, this.positionsCaisses.get(numeroCaisse).y))
+				{
+					retour = GAUCHE;
+				}
+				else
+				{
+					//Si un mur est présent en haut de la caisse
+					if(niveau.aMurXY(this.positionsCaisses.get(numeroCaisse).x, this.positionsCaisses.get(numeroCaisse).y - 1))
+					{
+						retour = HAUT;
+					}
+				}
 			}
 		}
 

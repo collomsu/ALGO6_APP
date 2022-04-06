@@ -522,21 +522,25 @@ class ConfigurationNiveau {
 				if(caissePeutEtreDecolleeMur == false)
 				{
 					//On regarde si en poussant la caisse vers la seconde extrémité on finirait par la décoller du mur
-					j = 1;
-
-					while (caissePeutEtreDecolleeMur == false
-						   && (this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
-						   && (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes())
+					if(niveau.aMurXY(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY), this.positionsCaisses.get(i).y + Math.abs(vecteurMurX)) == false
+					&& this.estCaissePresente(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY), this.positionsCaisses.get(i).y + Math.abs(vecteurMurX)))
 					{
-						//Si la caisse est décollée du mur
-						if(niveau.aMurXY(this.positionsCaisses.get(i).x + vecteurMurX + (Math.abs(vecteurMurY) * j),
-										 this.positionsCaisses.get(i).y + vecteurMurY + (Math.abs(vecteurMurX) * j)) == false)
+						j = 1;
+
+						while (caissePeutEtreDecolleeMur == false
+							&& (this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
+							&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes())
 						{
-							caissePeutEtreDecolleeMur = true;
-						}
-						else
-						{
-							j = j + 1;
+							//Si la caisse est décollée du mur
+							if(niveau.aMurXY(this.positionsCaisses.get(i).x + vecteurMurX + (Math.abs(vecteurMurY) * j),
+											this.positionsCaisses.get(i).y + vecteurMurY + (Math.abs(vecteurMurX) * j)) == false)
+							{
+								caissePeutEtreDecolleeMur = true;
+							}
+							else
+							{
+								j = j + 1;
+							}
 						}
 					}
 				}

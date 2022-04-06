@@ -460,10 +460,11 @@ class ConfigurationNiveau {
 				//	->Si mur � DROITE ou � GAUCHE : on regarde si au moins un mur est pr�sent sur l'axe Y autour de la caisse.
 				//	->Si mur en BAS ou en HAUT : on regarde si au moins un mur est pr�sent sur l'axe X de la caisse.
 				//Si un des cas est vrai, notre caisse est dans un coin, donc ne pourra plus bouger -> CAS BLOQUANT.
-				if(((directionMur == DROITE || directionMur == GAUCHE) && (
+				if(!niveau.aButXY(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y) && 
+				((directionMur == DROITE || directionMur == GAUCHE) && (
 				niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y - 1) || 
 				niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y + 1)))  ||
-				((directionMur == DROITE || directionMur == GAUCHE) && (
+				((directionMur == BAS || directionMur == HAUT) && (
 				niveau.aMur(this.positionsCaisses.get(i).x - 1, this.positionsCaisses.get(i).y) || 
 				niveau.aMur(this.positionsCaisses.get(i).x + 1, this.positionsCaisses.get(i).y)))) {
 					caisseDansCoin = true;
@@ -474,25 +475,11 @@ class ConfigurationNiveau {
 					case DROITE: {
 						vecteurMurX = 1;
 						vecteurMurY = 0;
-						if(niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y - 1)) {
-							caisseDansCoin = true;
-						} else if(niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y + 1)) {
-							caisseDansCoin = true;
-						} else {
-							caisseDansCoin = false;
-						}
 						break;
 					}
 					case BAS: {
 						vecteurMurX = 0;
 						vecteurMurY = 1;
-						if(niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y - 1)) {
-							caisseDansCoin = true;
-						} else if(niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y + 1)) {
-							caisseDansCoin = true;
-						} else {
-							caisseDansCoin = false;
-						}
 						break;
 					}
 					case GAUCHE: {
@@ -509,9 +496,6 @@ class ConfigurationNiveau {
 						throw new IllegalArgumentException("Unexpected value: " + directionMur);
 				}
 				
-				if()
-				
-
 				//Une caisse peut être décollée d'un mur si en la poussant à l'une des extrémités elle n'y est plus collée
 				//La caisse doit donc pouvoir être poussée en direction de l'extrémité pour pouvoir l'atteindre
 				//->Le pousseur doit pouvoir se faufiler derrière elle

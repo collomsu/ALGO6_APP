@@ -425,6 +425,8 @@ class ConfigurationNiveau {
 
 	//Fonction indiquant si la configuration courrante est bloquante.
 	//Une configuration est considérée comme bloquante si:
+	//-Une caisse est dans un coin
+	// OU
 	//-Une caisse est collée contre un mur.
 	//-Ladite caisse ne peut être décollée du mur.
 	//-Il n'y a contre ce mur pas assez de destinations pour le nombre de caisses qui y sont collées

@@ -228,7 +228,7 @@ public class Niveau implements Cloneable {
 		return !aCaisse(l, c) && !aMur(l, c);
 	}
 	//Equivalent de la fonction précédente mais avec comme ordre des paramètres (x, y) et non (y, x)
-	public boolean estOccupableXY(int l, int c) {
+	public boolean estOccupableXY(int c, int l) {
 		return this.estOccupable(l, c);
 	}
 

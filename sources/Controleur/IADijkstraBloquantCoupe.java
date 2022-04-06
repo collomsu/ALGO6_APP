@@ -435,14 +435,14 @@ class ConfigurationNiveau {
 		boolean retour = false;
 
 		int i = 0, j;
-		boolean caisseColleeAMur, caissePeutEtreDecolleeMur;
+		boolean caisseColleeAMur, caisseDansCoin, caissePeutEtreDecolleeMur;
 		int directionMur;
 
 		while (retour == false && i < this.positionsCaisses.size())
 		{
 			//On regarde si une caisse est collée à un mur
 			caisseColleeAMur = false;
-
+			caisseDansCoin = false;
 			directionMur = this.estCaisseColleeAMur(i, niveau);
 
 			if(directionMur != -1)
@@ -455,37 +455,62 @@ class ConfigurationNiveau {
 			{
 				//Couple de vecteurs utilisé pour calculer si la caisse peut être décollé du mur
 				int vecteurMurX = 0, vecteurMurY = 0;
-				//->Si ce couple = (1, 0), on regarde si l'on peut décoller la caisse d'un supposé mur à sa droite
-
-				if(directionMur == DROITE)
-				{
-					vecteurMurX = 1;
-					vecteurMurY = 0;
+				
+				//On v�rifie si la caisse est dans un coin ou non
+				//	->Si mur � DROITE ou � GAUCHE : on regarde si au moins un mur est pr�sent sur l'axe Y autour de la caisse.
+				//	->Si mur en BAS ou en HAUT : on regarde si au moins un mur est pr�sent sur l'axe X de la caisse.
+				//Si un des cas est vrai, notre caisse est dans un coin, donc ne pourra plus bouger -> CAS BLOQUANT.
+				if(((directionMur == DROITE || directionMur == GAUCHE) && (
+				niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y - 1) || 
+				niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y + 1)))  ||
+				((directionMur == DROITE || directionMur == GAUCHE) && (
+				niveau.aMur(this.positionsCaisses.get(i).x - 1, this.positionsCaisses.get(i).y) || 
+				niveau.aMur(this.positionsCaisses.get(i).x + 1, this.positionsCaisses.get(i).y)))) {
+					caisseDansCoin = true;
 				}
-				else
-				{
-					if(directionMur == BAS)
-					{
+				
+				//->Si ce couple = (1, 0), on regarde si l'on peut décoller la caisse d'un supposé mur à sa droite
+				switch (directionMur) {
+					case DROITE: {
+						vecteurMurX = 1;
+						vecteurMurY = 0;
+						if(niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y - 1)) {
+							caisseDansCoin = true;
+						} else if(niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y + 1)) {
+							caisseDansCoin = true;
+						} else {
+							caisseDansCoin = false;
+						}
+						break;
+					}
+					case BAS: {
 						vecteurMurX = 0;
 						vecteurMurY = 1;
-					}
-					else
-					{
-						if(directionMur == GAUCHE)
-						{
-							vecteurMurX = -1;
-							vecteurMurY = 0;
+						if(niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y - 1)) {
+							caisseDansCoin = true;
+						} else if(niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y + 1)) {
+							caisseDansCoin = true;
+						} else {
+							caisseDansCoin = false;
 						}
-						else
-						{
-							if(directionMur == HAUT)
-							{
-								vecteurMurX = 0;
-								vecteurMurY = -1;
-							}
-						}
+						break;
 					}
+					case GAUCHE: {
+						vecteurMurX = -1;
+						vecteurMurY = 0;
+						break;
+					}
+					case HAUT: {
+						vecteurMurX = 0;
+						vecteurMurY = -1;
+						break;
+					}
+					default:
+						throw new IllegalArgumentException("Unexpected value: " + directionMur);
 				}
+				
+				if()
+				
 
 				//Une caisse peut être décollée d'un mur si en la poussant à l'une des extrémités elle n'y est plus collée
 				//La caisse doit donc pouvoir être poussée en direction de l'extrémité pour pouvoir l'atteindre

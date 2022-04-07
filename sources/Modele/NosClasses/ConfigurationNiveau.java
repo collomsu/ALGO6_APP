@@ -193,7 +193,7 @@ public class ConfigurationNiveau {
 	//-Une caisse n'est pas sur une destination.
 	//-Elle est collée contre un mur.
 	//-Et si ladite caisse ne peut être déplacée pour être décollée du mur ou atteindre une destination.
-	// ->Il faut que la caisse puisse être déplacée (il ne faut pas qu'elle soit dans un coin/collée à une autre caisse)
+	// ->Il faut que la caisse puisse être déplacée (il ne faut pas qu'elle soit dans un coin/collée à une autre caisse qui est elle même collée au même mur)
 	// ->Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
 	//   =>Dans le cas où ces deux conditions ne sont pas validées, la configuration est bloquante
 	public boolean estConfigurationBloquante(Niveau niveau)
@@ -227,7 +227,7 @@ public class ConfigurationNiveau {
 				}
 				
 				//Si la caisse est collée à un mur, on regarde si elle peut être déplacée pour être décollée du mur ou atteindre une destination.
-				//->Il faut que la caisse puisse être déplacée (il ne faut pas qu'elle soit dans un coin/collée à une autre caisse)
+				//->Il faut que la caisse puisse être déplacée (il ne faut pas qu'elle soit dans un coin/collée à une autre caisse qui est elle même collée au même mur)
 				//->Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
 				if(caisseColleeAMur == true)
 				{
@@ -261,13 +261,15 @@ public class ConfigurationNiveau {
 					}
 
 					//On commence par contrôler si la caisse peut être déplacée
-					//->Il ne faut pas qu'elle soit dans un coin/collée à une autre caisse
+					//->Il ne faut pas qu'elle soit dans un coin/collée à une autre caisse qui est elle même collée au même mur
 					caisseBloquee = false;
 					if(niveau.aMurXY(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)) == true //Côté 1
-					   || this.estCaissePresente(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)) == true
+					   || (this.estCaissePresente(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)) == true
+					   	   && niveau.aMurXY(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY) + vecteurMurX, this.positionsCaisses.get(i).y - Math.abs(vecteurMurX) + vecteurMurY) == true)
 					   
 					   || niveau.aMurXY(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY), this.positionsCaisses.get(i).y + Math.abs(vecteurMurX)) == true //Côté 2
-					   || this.estCaissePresente(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY), this.positionsCaisses.get(i).y + Math.abs(vecteurMurX)) == true)
+					   || (this.estCaissePresente(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY), this.positionsCaisses.get(i).y + Math.abs(vecteurMurX)) == true
+					   	   && niveau.aMurXY(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY) + vecteurMurX, this.positionsCaisses.get(i).y + Math.abs(vecteurMurX) + vecteurMurY) == true))
 					{
 						caisseBloquee = true;
 					}

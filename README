@@ -12,12 +12,14 @@ Une configuration "bloquante" est une configuration dans laquelle les propriét�
  ->Si la caisse ne peut pas être décollée du mur mais qu'elle peut être déplacée pour atteindre une destination:
    =>Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
 
-Les configurations de niveaux sont traduites par la classe ConfigurationNiveau couplée au niveau désiré.
+Les configurations de niveaux sont traduites par la classe ConfigurationNiveau (du package Modele.NosClasses) couplée au niveau désiré.
 ->ConfigurationNiveau indique une position de pousseur et des positions de caisses.
 ->niveau indique la taille du niveau et la position des murs.
 
 Les configurations de niveau explorées/à explorer sont stockées dans une table de hachage.
-->Une clé de cette table est une configuration, la valeur associée à cette clé est la configuration précédente ayant mené à
-  la configuration clé. -> Permet de construire les déplacements solution du pousseur.
+->Une clé de cette table est une configuration, la valeur associée à cette clé est un objet InfoVisiteConfigurationNiveau
+  (du package Modele.NosClasses) indiquant la configuration précédente ayant mené à la configuration clé + si la
+  configuration clé a été visitée.
+  ->Le permier attribut permet de construire les déplacements solution du pousseur.
 
 Une file est utilisée pour explorer l'arbre des différentes configurations (parcours en largeur).

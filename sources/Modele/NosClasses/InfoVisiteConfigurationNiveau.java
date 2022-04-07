@@ -9,8 +9,11 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.awt.Point;
 
-//Classe utilisée par les classes IADijkstra contenant deux attributs indiquant utiles dans la recherche de la solution d'un niveau
-//de Sokoban.
+//Classe utilisée par les classes IADijkstra contenant deux attributs donnant des informations sur les configurations clés
+//de la table de hachage utilisée par les algorithmes de recherche de solution.
+//-configurationPrecedente est utilisé pour indiquer la configuration ayant mené à la configuration clé dans la 
+// table de hachage.
+//-aEteVisiteeConfiguration indique si la configuration clé a été visitée.
 public class InfoVisiteConfigurationNiveau {
 	public ConfigurationNiveau configurationPrecedente;
 	public boolean aEteVisiteeConfiguration;

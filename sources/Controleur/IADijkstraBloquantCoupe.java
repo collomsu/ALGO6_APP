@@ -124,7 +124,7 @@ class IADijkstraBloquantCoupe extends IA {
 			if(aEteTrouveeSolution == false)
 			{
 				//On regarde si la configuration actuelle est bloquante
-				//Si elle n'est pas bloquante
+				//Si elle n'est pas bloquante, on continue d'explorer la branche
 				if(configurationVisitee.estConfigurationBloquante(niveau) == false)
 				{
 					//Ajout à la file des configurations voisines possibles non-visitées.

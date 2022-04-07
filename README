@@ -1,0 +1,22 @@
+Les deux intelligences artificielles programmées pour la résolution du Sokoban sont décrites dans IADijkstra et IADijkstraBloquantCoupe.
+
+-La première résoud simplement le problème selon un algorithme de Dijkstra: en partant de la configuration de niveau initiale, toutes les possibilités de mouvements du pousseurs sont évaluées selon un parcours en largeur ; jusqu'à tomber sur une configuration dans laquelle toutes les caisses sont sur une case destination.
+Lorsqu'une telle configuration est trouvée, la solution est construite en "rembobinant" les configurations explorées pour évaluer les mouvements que le pousseur doit faire pour atteindre ladite solution.
+
+-La seconde résoud toujours le problème donné selon un algorithme de Dijkstra. La différence est que lorsqu'une configuration dite "bloquante" est rencontrée, on n'explore pas les "configurations filles" (configuration résultant d'un déplacement du pousseur à partir de la configuration) de cette configuration.
+Une configuration "bloquante" est une configuration dans laquelle les propriétés suivantes sont vérifiées:
+-Une caisse n'est pas sur une destination.
+-Elle est collée contre un mur.
+-Ladite caisse ne peut être déplacée pour être décollée du mur ou atteindre une destination.
+ ->Si la caisse ne peut pas être décollée du mur mais qu'elle peut être déplacée pour atteindre une destination:
+   =>Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
+
+Les configurations de niveaux sont traduites par la classe ConfigurationNiveau couplée au niveau désiré.
+->ConfigurationNiveau indique une position de pousseur et des positions de caisses.
+->niveau indique la taille du niveau et la position des murs.
+
+Les configurations de niveau explorées/à explorer sont stockées dans une table de hachage.
+->Une clé de cette table est une configuration, la valeur associée à cette clé est la configuration précédente ayant mené à
+  la configuration clé. -> Permet de construire les déplacements solution du pousseur.
+
+Une file est utilisée pour explorer l'arbre des différentes configurations (parcours en largeur).

@@ -41,9 +41,8 @@ import java.awt.Point;
 
 
 
-//IA appellée lorsque le joueur décide de laisser l'intelligence artificielle lui donner une solution pour le niveau.
-//Si le joueur était dans une situation bloquante, le niveau est rechargé.
-//Si une fois rechargé, le niveau n'a pas de solution, un message est affiché au joueur pour le lui indiquer.
+//IA appellée lorsque le joueur décide de laisser l'intelligence artificielle lui donner une solution en suivant un
+//algorithme de Dijkstra.
 class IADijkstra extends IA {
 	Logger logger;
 	// Couleurs au format RGB (rouge, vert, bleu, un octet par couleur)

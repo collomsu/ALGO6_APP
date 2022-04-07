@@ -1,6 +1,0 @@
-Pourquoi if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
-ne fonctionne pas alors que if(configurationAVisiter.estCleHashTable(tableVisiteConfigurations) == false) oui
-->J'ai pourtant bien Override la méthode equals de la classe ConfigurationNiveau
-
-
-Pourquoi la fonction creerCoup fait n'importe quoi.

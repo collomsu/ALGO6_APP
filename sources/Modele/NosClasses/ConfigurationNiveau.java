@@ -192,10 +192,9 @@ public class ConfigurationNiveau {
 	//Une configuration est considérée comme bloquante si dans cette dernière:
 	//-Une caisse n'est pas sur une destination.
 	//-Elle est collée contre un mur.
-	//-Et si ladite caisse ne peut être déplacée pour être décollée du mur ou atteindre une destination.
-	// ->Il faut que la caisse puisse être déplacée (il ne faut pas qu'elle soit dans un coin/collée à une autre caisse qui est elle même collée au même mur)
-	// ->Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
-	//   =>Dans le cas où ces deux conditions ne sont pas validées, la configuration est bloquante
+	//-Ladite caisse ne peut être déplacée pour être décollée du mur ou atteindre une destination.
+	// ->Si la caisse ne peut pas être décollée du mur mais qu'elle peut être déplacée pour atteindre une destination:
+    //   =>Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
 	public boolean estConfigurationBloquante(Niveau niveau)
 	{
 		boolean configurationBloquante = false;
@@ -228,7 +227,9 @@ public class ConfigurationNiveau {
 				
 				//Si la caisse est collée à un mur, on regarde si elle peut être déplacée pour être décollée du mur ou atteindre une destination.
 				//->Il faut que la caisse puisse être déplacée (il ne faut pas qu'elle soit dans un coin/collée à une autre caisse qui est elle même collée au même mur)
-				//->Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
+				
+				//Si la caisse ne peut pas être décollée du mur mais qu'elle peut être déplacée pour atteindre une destination:
+    			//=>Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
 				if(caisseColleeAMur == true)
 				{
 					//Couple de vecteurs utilisé pour factoriser les conditions
@@ -351,7 +352,7 @@ public class ConfigurationNiveau {
 							}
 						}
 
-						//Si la caisse ne peut être ni décollée du mur, ni atteindre une destination
+						//Si la caisse ne peut être ni décollée du mur, ni atteindre une destination, la situation est bloquante
 						if(caissePeutAtteindreDestination == false && caissePeutEtreDecolleeDuMur == false)
 						{
 							configurationBloquante = true;
@@ -359,7 +360,7 @@ public class ConfigurationNiveau {
 						else
 						{
 							//On termine en contrôlant, dans le cas où la caisse peut atteindre une destination mais ne peut être décollée du mur
-							//Si assez de destinations sont placées contre le mur pour toutes les caisses qui sont collées à lui
+							//Si assez de destinations sont placées contre le mur pour toutes les caisses qui sont collées à lui.
 							if(caissePeutAtteindreDestination == true && caissePeutEtreDecolleeDuMur == false)
 							{
 								assezDeDestinationsPourLesCaisses = false;

@@ -1,6 +1,6 @@
 Les deux intelligences artificielles programmées pour la résolution du Sokoban sont décrites dans IADijkstra et IADijkstraBloquantCoupe.
 
--La première résoud simplement le problème selon un algorithme de Dijkstra: en partant de la configuration de niveau initiale, toutes les possibilités de mouvements du pousseurs sont évaluées selon un parcours en largeur ; jusqu'à tomber sur une configuration dans laquelle toutes les caisses sont sur une case destination.
+-La première résoud simplement le problème via un algorithme de Dijkstra: en partant de la configuration de niveau initiale, toutes les possibilités de mouvements du pousseurs sont évaluées selon un parcours en largeur jusqu'à tomber sur une configuration dans laquelle toutes les caisses sont sur une case destination.
 Lorsqu'une telle configuration est trouvée, la solution est construite en "rembobinant" les configurations explorées pour évaluer les mouvements que le pousseur doit faire pour atteindre ladite solution.
 L'algorithme utilisé pour parcourir le graphe des configurations étant un algorithme de Dijkstra parcourant ce dernier en largeur: lorsqu'une solution est trouvée, son nombre de coups est celui de l'une des solutions de coup minimum.
 

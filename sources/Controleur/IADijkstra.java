@@ -75,6 +75,8 @@ class IADijkstra extends IA {
 	public Sequence<Coup> TrouverSolution() {
 		int i;
 
+		int numConfigurationVisitee = 1;
+
 		Sequence<Coup> solution = Configuration.instance().nouvelleSequence();
 
 		//File contenant les configurations rencontrées et que l'on doit visiter
@@ -96,6 +98,8 @@ class IADijkstra extends IA {
 
 		while(aEteTrouveeSolution == false && configurationsAVisiter.estVide() == false)
 		{
+			logger.info("Visite de la configuration n°" + numConfigurationVisitee + ".");
+
 			configurationVisitee = configurationsAVisiter.extraitTete();
 
 			//On indique dans la table de hachage que la configuration actuelle est visitée
@@ -215,6 +219,11 @@ class IADijkstra extends IA {
 
 					configurationPrecedenteSequence = configurationActuelleSequence;
 				}
+			}
+
+			if(aEteTrouveeSolution == false)
+			{
+				numConfigurationVisitee = numConfigurationVisitee + 1;
 			}
 		}
 

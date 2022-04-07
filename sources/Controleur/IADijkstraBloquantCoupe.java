@@ -75,6 +75,8 @@ class IADijkstra extends IA {
 	public Sequence<Coup> TrouverSolution() {
 		int i;
 
+		int numConfigurationVisitee = 1;
+
 		Sequence<Coup> solution = Configuration.instance().nouvelleSequence();
 
 		//File contenant les configurations rencontrées et que l'on doit visiter
@@ -96,6 +98,8 @@ class IADijkstra extends IA {
 
 		while(aEteTrouveeSolution == false && configurationsAVisiter.estVide() == false)
 		{
+			logger.info("Visite de la configuration n°" + numConfigurationVisitee + ".");
+
 			configurationVisitee = configurationsAVisiter.extraitTete();
 
 			//On indique dans la table de hachage que la configuration actuelle est visitée
@@ -117,61 +121,66 @@ class IADijkstra extends IA {
 			//Si la configuration n'est pas une solution
 			if(aEteTrouveeSolution == false)
 			{
-				//Ajout à la file des configurations voisines possibles non-visitées.
-
-				//Si l'on déplace le pousseur à droite
-				if(configurationVisitee.peutPousseurSeDeplacer(DROITE, niveau))
+				//On regarde si la configuration actuelle est bloquante
+				//Si elle n'est pas bloquante
+				if(configurationVisitee.estConfigurationBloquante(niveau) == false)
 				{
-					configurationAVisiter = configurationVisitee.configurationApresDeplacement(DROITE);
-					
-					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
-					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+					//Ajout à la file des configurations voisines possibles non-visitées.
+
+					//Si l'on déplace le pousseur à droite
+					if(configurationVisitee.peutPousseurSeDeplacer(DROITE, niveau))
 					{
-						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
-						configurationsAVisiter.insereQueue(configurationAVisiter);
+						configurationAVisiter = configurationVisitee.configurationApresDeplacement(DROITE);
+						
+						//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
+						//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
+						if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+						{
+							tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
+							configurationsAVisiter.insereQueue(configurationAVisiter);
+						}
 					}
-				}
 
-				//Si l'on déplace le pousseur en bas
-				if(configurationVisitee.peutPousseurSeDeplacer(BAS, niveau))
-				{
-					configurationAVisiter = configurationVisitee.configurationApresDeplacement(BAS);
-					
-					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
-					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+					//Si l'on déplace le pousseur en bas
+					if(configurationVisitee.peutPousseurSeDeplacer(BAS, niveau))
 					{
-						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
-						configurationsAVisiter.insereQueue(configurationAVisiter);
+						configurationAVisiter = configurationVisitee.configurationApresDeplacement(BAS);
+						
+						//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
+						//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
+						if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+						{
+							tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
+							configurationsAVisiter.insereQueue(configurationAVisiter);
+						}
 					}
-				}
 
-				//Si l'on déplace le pousseur à gauche
-				if(configurationVisitee.peutPousseurSeDeplacer(GAUCHE, niveau))
-				{
-					configurationAVisiter = configurationVisitee.configurationApresDeplacement(GAUCHE);
-					
-					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
-					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+					//Si l'on déplace le pousseur à gauche
+					if(configurationVisitee.peutPousseurSeDeplacer(GAUCHE, niveau))
 					{
-						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
-						configurationsAVisiter.insereQueue(configurationAVisiter);
+						configurationAVisiter = configurationVisitee.configurationApresDeplacement(GAUCHE);
+						
+						//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
+						//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
+						if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+						{
+							tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
+							configurationsAVisiter.insereQueue(configurationAVisiter);
+						}
 					}
-				}
 
-				//Si l'on déplace le pousseur en haut
-				if(configurationVisitee.peutPousseurSeDeplacer(HAUT, niveau))
-				{
-					configurationAVisiter = configurationVisitee.configurationApresDeplacement(HAUT);
-					
-					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
-					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+					//Si l'on déplace le pousseur en haut
+					if(configurationVisitee.peutPousseurSeDeplacer(HAUT, niveau))
 					{
-						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
-						configurationsAVisiter.insereQueue(configurationAVisiter);
+						configurationAVisiter = configurationVisitee.configurationApresDeplacement(HAUT);
+						
+						//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
+						//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
+						if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
+						{
+							tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
+							configurationsAVisiter.insereQueue(configurationAVisiter);
+						}
 					}
 				}
 			}
@@ -215,6 +224,11 @@ class IADijkstra extends IA {
 
 					configurationPrecedenteSequence = configurationActuelleSequence;
 				}
+			}
+
+			if(aEteTrouveeSolution == false)
+			{
+				numConfigurationVisitee = numConfigurationVisitee + 1;
 			}
 		}
 
@@ -424,183 +438,252 @@ class ConfigurationNiveau {
 	}
 
 	//Fonction indiquant si la configuration courrante est bloquante.
-	//Une configuration est considérée comme bloquante si:
-	//-Une caisse est dans un coin
-	// OU
-	//-Une caisse est collée contre un mur.
-	//-Ladite caisse ne peut être décollée du mur.
-	//-Il n'y a contre ce mur pas assez de destinations pour le nombre de caisses qui y sont collées
+	//Une configuration est considérée comme bloquante si dans cette dernière:
+	//-Une caisse n'est pas sur une destination.
+	//-Elle est collée contre un mur.
+	//-Et si ladite caisse ne peut être déplacée pour être décollée du mur ou atteindre une destination.
+	// ->Il faut que la caisse puisse être déplacée (il ne faut pas qu'elle soit dans un coin/collée à une autre caisse)
+	// ->Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
+	//   =>Dans le cas où ces deux conditions ne sont pas validées, la configuration est bloquante
 	public boolean estConfigurationBloquante(Niveau niveau)
 	{
-		boolean retour = false;
+		boolean configurationBloquante = false;
 
 		int i = 0, j;
-		boolean caisseColleeAMur, caisseDansCoin, caissePeutEtreDecolleeMur;
+		boolean caisseSurDestination, caisseColleeAMur, caisseBloquee, caissePeutEtreDecolleeDuMur, caissePeutAtteindreDestination, assezDeDestinationsPourLesCaisses;
+		int nbCaissesContreMur, nbDestinationsContreMur;
 		int directionMur;
 
-		while (retour == false && i < this.positionsCaisses.size())
+		while (configurationBloquante == false && i < this.positionsCaisses.size())
 		{
-			//On regarde si une caisse est collée à un mur
-			caisseColleeAMur = false;
-			caisseDansCoin = false;
-			caissePeutEtreDecolleeMur = false;
-			directionMur = this.estCaisseColleeAMur(i, niveau);
+			caisseSurDestination = false;
 
-			if(directionMur != -1)
+			//On regarde si la caisse n'est pas sur une destination
+			if(niveau.aButXY(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y))
 			{
-				caisseColleeAMur = true;
+				caisseSurDestination = true;
 			}
 
-			//Si une caisse est collée à un mur, on regarde si on peut décoller ladite caisse du mur
-			if(caisseColleeAMur = true)
+			if(caisseSurDestination == false)
 			{
-				//Couple de vecteurs utilisé pour calculer si la caisse peut être décollé du mur
-				int vecteurMurX = 0, vecteurMurY = 0;
-				
-				//On v�rifie si la caisse est dans un coin ou non
-				//	->Si mur � DROITE ou � GAUCHE : on regarde si au moins un mur est pr�sent sur l'axe Y autour de la caisse.
-				//	->Si mur en BAS ou en HAUT : on regarde si au moins un mur est pr�sent sur l'axe X de la caisse.
-				//Si un des cas est vrai, notre caisse est dans un coin, donc ne pourra plus bouger -> CAS BLOQUANT.
-				if(!niveau.aButXY(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y) && 
-				((directionMur == DROITE || directionMur == GAUCHE) && (
-				niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y - 1) || 
-				niveau.aMur(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y + 1)))  ||
-				((directionMur == BAS || directionMur == HAUT) && (
-				niveau.aMur(this.positionsCaisses.get(i).x - 1, this.positionsCaisses.get(i).y) || 
-				niveau.aMur(this.positionsCaisses.get(i).x + 1, this.positionsCaisses.get(i).y)))) {
-					caisseDansCoin = true;
-				}
-				
-				//->Si ce couple = (1, 0), on regarde si l'on peut décoller la caisse d'un supposé mur à sa droite
-				switch (directionMur) {
-					case DROITE: {
-						vecteurMurX = 1;
-						vecteurMurY = 0;
-						break;
-					}
-					case BAS: {
-						vecteurMurX = 0;
-						vecteurMurY = 1;
-						break;
-					}
-					case GAUCHE: {
-						vecteurMurX = -1;
-						vecteurMurY = 0;
-						break;
-					}
-					case HAUT: {
-						vecteurMurX = 0;
-						vecteurMurY = -1;
-						break;
-					}
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + directionMur);
-				}
-				
-				//Une caisse peut être décollée d'un mur si en la poussant à l'une des extrémités elle n'y est plus collée
-				//La caisse doit donc pouvoir être poussée en direction de l'extrémité pour pouvoir l'atteindre
-				//->Le pousseur doit pouvoir se faufiler derrière elle
+				//On regarde si la caisse est collée à un mur
+				caisseColleeAMur = false;
+				directionMur = this.estCaisseColleeAMur(i, niveau);
 
-				
-
-				//On regarde si le pousseur peut se faufiler derrière la caisse pour la pousser vers la première extrémité
-				if(niveau.aMurXY(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)) == false
-					&& this.estCaissePresente(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)))
+				if(directionMur != -1)
 				{
-					//On regarde si en poussant la caisse vers la première extrémité on finirait par la décoller du mur
-					j = 1;
-
-					while (caissePeutEtreDecolleeMur == false
-						   && (this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j)) >= 0
-						   && (this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)) >= 0)
-					{
-						//Si la caisse est décollée du mur
-						if(niveau.aMurXY(this.positionsCaisses.get(i).x + vecteurMurX - (Math.abs(vecteurMurY) * j),
-										 this.positionsCaisses.get(i).y + vecteurMurY - (Math.abs(vecteurMurX) * j)) == false)
-						{
-							caissePeutEtreDecolleeMur = true;
-						}
-						else
-						{
-							j = j + 1;
-						}
-					}
+					caisseColleeAMur = true;
 				}
-
-				//Si on ne peut pas décoller la caisse du mur en la poussant vers la première extrémité
-				//On regarde si le pousseur peut se faufiler derrière la caisse pour la pousser vers la seconde extrémité
-				if(caissePeutEtreDecolleeMur == false)
+				
+				//Si la caisse est collée à un mur, on regarde si elle peut être déplacée pour être décollée du mur ou atteindre une destination.
+				//->Il faut que la caisse puisse être déplacée (il ne faut pas qu'elle soit dans un coin/collée à une autre caisse)
+				//->Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
+				if(caisseColleeAMur = true)
 				{
-					//On regarde si en poussant la caisse vers la seconde extrémité on finirait par la décoller du mur
-					if(niveau.aMurXY(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY), this.positionsCaisses.get(i).y + Math.abs(vecteurMurX)) == false
-					&& this.estCaissePresente(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY), this.positionsCaisses.get(i).y + Math.abs(vecteurMurX)))
+					//Couple de vecteurs utilisé pour factoriser les conditions
+					int vecteurMurX = 0, vecteurMurY = 0;
+
+					//->Si ce couple = (1, 0), on regarde si l'on peut décoller la caisse d'un supposé mur à sa droite
+					switch (directionMur) {
+						case DROITE: {
+							vecteurMurX = 1;
+							vecteurMurY = 0;
+							break;
+						}
+						case BAS: {
+							vecteurMurX = 0;
+							vecteurMurY = 1;
+							break;
+						}
+						case GAUCHE: {
+							vecteurMurX = -1;
+							vecteurMurY = 0;
+							break;
+						}
+						case HAUT: {
+							vecteurMurX = 0;
+							vecteurMurY = -1;
+							break;
+						}
+						default:
+							throw new IllegalArgumentException("Unexpected value: " + directionMur);
+					}
+
+					//On commence par contrôler si la caisse peut être déplacée
+					//->Il ne faut pas qu'elle soit dans un coin/collée à une autre caisse
+					caisseBloquee = false;
+					if(niveau.aMurXY(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)) == true //Côté 1
+					   || this.estCaissePresente(this.positionsCaisses.get(i).x - Math.abs(vecteurMurY), this.positionsCaisses.get(i).y - Math.abs(vecteurMurX)) == true
+					   
+					   || niveau.aMurXY(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY), this.positionsCaisses.get(i).y + Math.abs(vecteurMurX)) == true //Côté 2
+					   || this.estCaissePresente(this.positionsCaisses.get(i).x + Math.abs(vecteurMurY), this.positionsCaisses.get(i).y + Math.abs(vecteurMurX)) == true)
 					{
+						caisseBloquee = true;
+					}
+
+					//Si la caisse est bloquée (sur une case qui n'est pas une destination)
+					if(caisseBloquee == true)
+					{
+						configurationBloquante = true;
+					}
+					//Si la caisse peut être déplacée
+					else
+					{
+						//On regarde si la caisse peut être déplacée pour être décollée du mur ou atteindre une destination.
+						caissePeutEtreDecolleeDuMur = false;
+						caissePeutAtteindreDestination = false;
+						
+						//Une caisse peut être décollée d'un mur si en la poussant à l'une des extrémités elle n'y est plus collée
+						//Une caisse peut atteindre une destination si en la poussant vers l'une des extrémités elle peut en atteindre une
+
+
+						//On regarde si en poussant la caisse vers la première extrémité on finirait par la décoller du mur/la placer sur une destination
 						j = 1;
 
-						while (caissePeutEtreDecolleeMur == false
-							&& (this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
-							&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes())
+						while ((this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j)) >= 0
+							&& (this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)) >= 0)
 						{
 							//Si la caisse est décollée du mur
-							if(niveau.aMurXY(this.positionsCaisses.get(i).x + vecteurMurX + (Math.abs(vecteurMurY) * j),
-											this.positionsCaisses.get(i).y + vecteurMurY + (Math.abs(vecteurMurX) * j)) == false)
+							if(niveau.aMurXY(this.positionsCaisses.get(i).x + vecteurMurX - (Math.abs(vecteurMurY) * j),
+												this.positionsCaisses.get(i).y + vecteurMurY - (Math.abs(vecteurMurX) * j)) == false)
 							{
-								caissePeutEtreDecolleeMur = true;
+								caissePeutEtreDecolleeDuMur = true;
 							}
 							else
 							{
-								j = j + 1;
+								//Si la caisse a atteint une destination
+								if(niveau.aButXY(this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j),
+													this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)))
+								{
+									caissePeutAtteindreDestination = true;
+								}
+								else
+								{
+									j = j + 1;
+								}
 							}
 						}
-					}
-				}
-				
-				//Si la caisse ne peut pas être décollée du mur, on regarde si une destination est collée à ce mur
-				if(!caissePeutEtreDecolleeMur) {
-					boolean placeDispo = false;
-					j = 1;
 
-					while (!placeDispo  && !niveau.aMurXY(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y)
-						&& (this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
-						&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes()) {
-						//Si un But est pr�sent sur le long du mur
-						if(niveau.aButXY(this.positionsCaisses.get(i).x + vecteurMurX + (Math.abs(vecteurMurY) * j),
-										this.positionsCaisses.get(i).y + vecteurMurY + (Math.abs(vecteurMurX) * j))) {
-							placeDispo = true;
-						}
-						else {
-							j++;
-						}
-					}
-					
-					if(!placeDispo) {
-						j = 1;
-						
-						while (!placeDispo  && !niveau.aMurXY(this.positionsCaisses.get(i).x, this.positionsCaisses.get(i).y)
-							&& (this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
-							&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes()) {
-							//Si un But est pr�sent sur le long du mur
-							if(niveau.aButXY(this.positionsCaisses.get(i).x + vecteurMurX - (Math.abs(vecteurMurY) * j),
-											this.positionsCaisses.get(i).y + vecteurMurY - (Math.abs(vecteurMurX) * j))) {
-								placeDispo = true;
+
+						//Si en poussant la caisse vers la première extrémité la situation n'est pas débloquée
+						if(caissePeutEtreDecolleeDuMur == false && caissePeutAtteindreDestination == false)
+						{
+							//On regarde si en poussant la caisse vers la première extrémité on finirait par la décoller du mur/la placer sur une destination
+							j = 1;
+
+							while ((this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
+								&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes())
+							{
+								//Si la caisse est décollée du mur
+								if(niveau.aMurXY(this.positionsCaisses.get(i).x + vecteurMurX + (Math.abs(vecteurMurY) * j),
+												this.positionsCaisses.get(i).y + vecteurMurY + (Math.abs(vecteurMurX) * j)) == false)
+								{
+									caissePeutEtreDecolleeDuMur = true;
+								}
+								else
+								{
+									//Si la caisse a atteint une destination
+									if(niveau.aButXY(this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j),
+													this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)))
+									{
+										caissePeutAtteindreDestination = true;
+									}
+									else
+									{
+										j = j + 1;
+									}
+								}
 							}
-							else {
-								j++;
+						}
+
+						//Si la caisse ne peut être ni décollée du mur, ni atteindre une destination
+						if((caissePeutAtteindreDestination == false && caissePeutEtreDecolleeDuMur == false))
+						{
+							configurationBloquante = true;
+						}
+						else
+						{
+							//On termine en contrôlant, dans le cas où la caisse peut atteindre une destination mais ne peut être décollée du mur
+							//Si assez de destinations sont placées contre le mur pour toutes les caisses qui sont collées à lui
+							if(caissePeutAtteindreDestination == true && caissePeutEtreDecolleeDuMur == false)
+							{
+								assezDeDestinationsPourLesCaisses = false;
+								nbCaissesContreMur = 0;
+								nbDestinationsContreMur = 0;
+
+								//Extremité 1 + position actuelle
+								j = 0;
+
+								while ((this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j)) >= 0
+									&& (this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)) >= 0)
+								{
+									//Si la case actuelle est une caisse
+									if(this.estCaissePresente(this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j),
+															this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)))
+									{
+										nbCaissesContreMur = nbCaissesContreMur + 1;
+									}
+
+									//Si la case actuelle est une destination
+									if(niveau.aButXY(this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j),
+													this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)))
+									{
+										nbDestinationsContreMur = nbDestinationsContreMur + 1;
+									}
+									
+									j = j + 1;
+								}
+
+								//Extremité 2
+								j = 0;
+
+								while ((this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
+									&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes())
+								{
+									//Si la case actuelle est une caisse
+									if(this.estCaissePresente(this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j),
+															this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)))
+									{
+										nbCaissesContreMur = nbCaissesContreMur + 1;
+									}
+
+									//Si la case actuelle est une destination
+									if(niveau.aButXY(this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j),
+													this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)))
+									{
+										nbDestinationsContreMur = nbDestinationsContreMur + 1;
+									}
+									
+									j = j + 1;
+								}
+
+
+								//Si il n'y a pas assez de destinations contre le mur pour le nombre de caisses qui y sont collées
+								if(nbCaissesContreMur == nbDestinationsContreMur)
+								{
+									assezDeDestinationsPourLesCaisses = true;
+								}
+
+								//Si la caisse ne peut être décollée du mur, peut atteindre une destination mais il y a trop de caisses
+								//contre le mur pour le nombre de destinations collées à lui
+								if(assezDeDestinationsPourLesCaisses == false)
+								{
+									configurationBloquante = true;
+								}
 							}
 						}
 					}
 				}
 			}
-
 			
 			
-			if(caisseColleeAMur == false)
+			if(configurationBloquante == false)
 			{
 				i = i + 1;
 			}
 		}
 
-		return retour;
+		return configurationBloquante;
 	}
 
 	//Fonction indiquant si une caisse est présente dans les coordonnées indiquées

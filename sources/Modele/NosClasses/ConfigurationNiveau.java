@@ -229,7 +229,7 @@ public class ConfigurationNiveau {
 				//Si la caisse est collée à un mur, on regarde si elle peut être déplacée pour être décollée du mur ou atteindre une destination.
 				//->Il faut que la caisse puisse être déplacée (il ne faut pas qu'elle soit dans un coin/collée à une autre caisse)
 				//->Il faut que le mur ait assez de destinations pour toutes les caisses qui sont collées à lui
-				if(caisseColleeAMur = true)
+				if(caisseColleeAMur == true)
 				{
 					//Couple de vecteurs utilisé pour factoriser les conditions
 					int vecteurMurX = 0, vecteurMurY = 0;

@@ -2,6 +2,7 @@ Les deux intelligences artificielles programmées pour la résolution du Sokoban
 
 -La première résoud simplement le problème selon un algorithme de Dijkstra: en partant de la configuration de niveau initiale, toutes les possibilités de mouvements du pousseurs sont évaluées selon un parcours en largeur ; jusqu'à tomber sur une configuration dans laquelle toutes les caisses sont sur une case destination.
 Lorsqu'une telle configuration est trouvée, la solution est construite en "rembobinant" les configurations explorées pour évaluer les mouvements que le pousseur doit faire pour atteindre ladite solution.
+L'algorithme utilisé pour parcourir le graphe des configurations étant un algorithme de Dijkstra parcourant ce dernier en largeur: lorsqu'une solution est trouvée, son nombre de coups est celui de l'une des solutions de coup minimum.
 
 -La seconde résoud toujours le problème donné selon un algorithme de Dijkstra. La différence est que lorsqu'une configuration dite "bloquante" est rencontrée, on n'explore pas les "configurations filles" (configuration résultant d'un déplacement du pousseur à partir de la configuration) de cette configuration.
 Une configuration "bloquante" est une configuration dans laquelle les propriétés suivantes sont vérifiées:

@@ -430,10 +430,6 @@ public class ConfigurationNiveau {
 			{
 				i = i + 1;
 			}
-			else
-			{
-				logger.info("Config bloquante, pousseur: " + this.positionPousseur.toString() + ", caisses: " + this.positionsCaisses.toString() + ", i: " + i);
-			}
 		}
 
 		return configurationBloquante;

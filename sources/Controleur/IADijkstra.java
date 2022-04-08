@@ -130,7 +130,6 @@ class IADijkstra extends IA {
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(DROITE);
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
 					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
@@ -144,7 +143,6 @@ class IADijkstra extends IA {
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(BAS);
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
 					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
@@ -158,7 +156,6 @@ class IADijkstra extends IA {
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(GAUCHE);
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
 					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));
@@ -172,7 +169,6 @@ class IADijkstra extends IA {
 					configurationAVisiter = configurationVisitee.configurationApresDeplacement(HAUT);
 					
 					//Si la configuration n'a pas déjà été visitée, on l'ajoute à la file des configurations à visiter
-					//Demander pourquoi un simple containsKey ne fonctionne pas alors que j'ai bien Override la méthode equals de ConfigurationNiveau
 					if(tableVisiteConfigurations.containsKey(configurationAVisiter) == false)
 					{
 						tableVisiteConfigurations.put(configurationAVisiter, new InfoVisiteConfigurationNiveau(configurationVisitee, false));

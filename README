@@ -23,3 +23,6 @@ Les configurations de niveau explorées/à explorer sont stockées dans une tabl
   ->Le permier attribut permet de construire les déplacements solution du pousseur.
 
 Une file est utilisée pour explorer l'arbre des différentes configurations (parcours en largeur).
+
+
+UPDATE: Cette version est une mise à jour de l'ancien rendu. Dans ce dernier, une mauvaise condition faisait que des situations étaient considérées comme bloquantes alors qu'elles ne l'étaient pas.

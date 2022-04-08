@@ -391,7 +391,7 @@ public class ConfigurationNiveau {
 								}
 
 								//Extremité 2
-								j = 0;
+								j = 1;
 
 								while ((this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
 									&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes())
@@ -415,7 +415,7 @@ public class ConfigurationNiveau {
 
 
 								//Si il n'y a pas assez de destinations contre le mur pour le nombre de caisses qui y sont collées
-								if(nbCaissesContreMur == nbDestinationsContreMur)
+								if(nbCaissesContreMur <= nbDestinationsContreMur)
 								{
 									assezDeDestinationsPourLesCaisses = true;
 								}

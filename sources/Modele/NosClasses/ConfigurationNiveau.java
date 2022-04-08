@@ -294,7 +294,7 @@ public class ConfigurationNiveau {
 						//On regarde si en poussant la caisse vers la première extrémité on finirait par la décoller du mur/la placer sur une destination
 						j = 1;
 
-						while (caissePeutEtreDecolleeDuMur == false && caissePeutAtteindreDestination == false
+						while ((caissePeutEtreDecolleeDuMur == false || caissePeutAtteindreDestination == false)
 							&& (this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j)) >= 0
 							&& (this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)) >= 0)
 						{
@@ -304,19 +304,15 @@ public class ConfigurationNiveau {
 							{
 								caissePeutEtreDecolleeDuMur = true;
 							}
-							else
+
+							//Si la caisse a atteint une destination
+							if(niveau.aButXY(this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j),
+							this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)))
 							{
-								//Si la caisse a atteint une destination
-								if(niveau.aButXY(this.positionsCaisses.get(i).x - (Math.abs(vecteurMurY) * j),
-													this.positionsCaisses.get(i).y - (Math.abs(vecteurMurX) * j)))
-								{
-									caissePeutAtteindreDestination = true;
-								}
-								else
-								{
-									j = j + 1;
-								}
+								caissePeutAtteindreDestination = true;
 							}
+							
+							j = j + 1;
 						}
 
 
@@ -326,7 +322,7 @@ public class ConfigurationNiveau {
 							//On regarde si en poussant la caisse vers la première extrémité on finirait par la décoller du mur/la placer sur une destination
 							j = 1;
 
-							while (caissePeutEtreDecolleeDuMur == false && caissePeutAtteindreDestination == false
+							while ((caissePeutEtreDecolleeDuMur == false || caissePeutAtteindreDestination == false)
 								&& (this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j)) < niveau.colonnes()
 								&& (this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)) < niveau.lignes())
 							{
@@ -336,21 +332,18 @@ public class ConfigurationNiveau {
 								{
 									caissePeutEtreDecolleeDuMur = true;
 								}
-								else
+
+								//Si la caisse a atteint une destination
+								if(niveau.aButXY(this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j),
+								this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)))
 								{
-									//Si la caisse a atteint une destination
-									if(niveau.aButXY(this.positionsCaisses.get(i).x + (Math.abs(vecteurMurY) * j),
-													this.positionsCaisses.get(i).y + (Math.abs(vecteurMurX) * j)))
-									{
-										caissePeutAtteindreDestination = true;
-									}
-									else
-									{
-										j = j + 1;
-									}
+									caissePeutAtteindreDestination = true;
 								}
+
+								j = j + 1;
 							}
 						}
+						
 
 						//Si la caisse ne peut être ni décollée du mur, ni atteindre une destination, la situation est bloquante
 						if(caissePeutAtteindreDestination == false && caissePeutEtreDecolleeDuMur == false)
@@ -436,6 +429,10 @@ public class ConfigurationNiveau {
 			if(configurationBloquante == false)
 			{
 				i = i + 1;
+			}
+			else
+			{
+				logger.info("Config bloquante, pousseur: " + this.positionPousseur.toString() + ", caisses: " + this.positionsCaisses.toString() + ", i: " + i);
 			}
 		}
 
